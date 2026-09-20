@@ -3,7 +3,7 @@ const ID="1Bd8wmbV37vcx2kUpsdelKSDS70imhARr3ddQDJSnMRc";
 module.exports=async function(req,res){
  if(req.method!=="POST")return res.status(405).json({ok:false});
  try{
-  const d=req.body||{}, allowed=new Set(["page_view","expansion_click","registration_cta_click","registration_submit"]);
+  const d=req.body||{}, allowed=new Set(["page_view","expansion_click","registration_cta_click","registration_submit","case_analysis"]);
   if(!allowed.has(d.event))return res.status(400).json({ok:false});
   const key=(process.env.GOOGLE_PRIVATE_KEY||"").trim().replace(/^["']|["']$/g,"").replace(/\\n/g,"\n");
   const auth=new google.auth.GoogleAuth({credentials:{client_email:process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,private_key:key},scopes:["https://www.googleapis.com/auth/spreadsheets"]});
