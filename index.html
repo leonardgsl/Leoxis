@@ -110,5 +110,13 @@ toggleOpex();
 const LEOXIS_REGISTRATION_ENDPOINT='/api/register';
 document.getElementById('interestForm')?.addEventListener('submit',async function(e){e.preventDefault();const f=e.currentTarget;const data=Object.fromEntries(new FormData(f).entries());data.timestamp=new Date().toISOString();data.source='leoxis.vercel.app';if(LEOXIS_REGISTRATION_ENDPOINT.startsWith('REPLACE_')){alert('Registration database connection is being configured.');return;}try{const res=await fetch(LEOXIS_REGISTRATION_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(!res.ok)throw new Error('Registration failed');document.getElementById('interestSuccess').style.display='block';f.reset();}catch(err){alert('Unable to register right now. Please try again.')}});
 </script>
+<script id="LEOXIS_ANALYTICS_V074">
+(function(){
+ function track(event,data){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({event:event,path:location.pathname,referrer:document.referrer||'',ts:new Date().toISOString()},data||{})),keepalive:true});}catch(e){}}
+ window.leoxisTrack=track; track('page_view');
+ document.addEventListener('click',function(e){var el=e.target.closest('a,button');if(!el)return;var t=(el.innerText||el.getAttribute('aria-label')||'').trim().slice(0,80);if(/expansion/i.test(t))track('expansion_click',{label:t});if(/founding retailer|join the program/i.test(t))track('registration_cta_click',{label:t});});
+ var f=document.querySelector('form');if(f)f.addEventListener('submit',function(){track('registration_submit');});
+})();
+</script>
 </body>
 </html>
