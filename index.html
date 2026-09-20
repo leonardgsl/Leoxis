@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>LEOXIS Expansion v0.1</title>
+<title>LEOXIS Expansion v0.2</title>
 <meta name="description" content="LEOXIS Expansion — retail investment committee decision-support prototype." />
 <style>
 :root{
@@ -52,6 +52,61 @@ hr{border:0;border-top:1px solid var(--line);margin:24px 0}
  .section-title{align-items:flex-start;flex-direction:column}
 }
 </style>
+
+<style id="v02-mobile-polish">
+/* LEOXIS Expansion v0.2 — mobile UX polish only; model logic unchanged */
+@media (max-width: 640px) {
+  body { overflow-x: hidden; }
+  .shell { padding-left: 14px !important; padding-right: 14px !important; }
+  .topbar { gap: 10px !important; padding-top: 12px !important; padding-bottom: 12px !important; }
+  .brand { gap: 10px !important; }
+  .brand > div:first-child { flex: 0 0 auto; }
+  .topbar button, .topbar .btn { padding: 12px 14px !important; font-size: 14px !important; line-height: 1.15 !important; }
+
+  /* Convert the 3-stage navigation from clipped horizontal tabs to a compact grid. */
+  .steps, .tabs, .stepbar, .navsteps {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    overflow: visible !important;
+    gap: 4px !important;
+  }
+  .steps > *, .tabs > *, .stepbar > *, .navsteps > * {
+    min-width: 0 !important;
+    width: auto !important;
+    white-space: normal !important;
+    text-align: center !important;
+    padding: 10px 6px !important;
+    font-size: 12px !important;
+    line-height: 1.15 !important;
+  }
+
+  h1 { font-size: clamp(34px, 10vw, 46px) !important; line-height: .98 !important; }
+  h2 { font-size: 27px !important; line-height: 1.05 !important; }
+  h3 { font-size: 21px !important; line-height: 1.12 !important; }
+  p { line-height: 1.38 !important; }
+
+  .card, .panel, section { scroll-margin-top: 120px; }
+  .metrics, .metric-grid, .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .metric, .kpi {
+    min-width: 0 !important;
+    padding: 16px 14px !important;
+  }
+  .metric strong, .kpi strong { overflow-wrap: anywhere; }
+
+  input, select, textarea { min-height: 48px; font-size: 16px !important; }
+  button, .btn { min-height: 48px; }
+
+  table { font-size: 13px !important; }
+  .table-wrap, .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+
+  /* Make management actions easier to scan without changing their content. */
+  .tag, .badge, .pill { line-height: 1.15 !important; }
+}
+</style>
+
 </head>
 <body>
 <div class="shell">
@@ -236,7 +291,7 @@ hr{border:0;border-top:1px solid var(--line);margin:24px 0}
     <div class="actions"><button class="btn secondary" onclick="showTab('review')">Back to review</button></div>
   </section>
 
-  <p class="footer-note">LEOXIS Expansion v0.1 is a prototype decision-support tool. It does not replace management judgment, legal review, lease diligence, accounting advice, or investment committee authority. Confidence is a rules-based evidence-completeness indicator, not a probability of success.</p>
+  <p class="footer-note">LEOXIS Expansion v0.2 is a prototype decision-support tool. It does not replace management judgment, legal review, lease diligence, accounting advice, or investment committee authority. Confidence is a rules-based evidence-completeness indicator, not a probability of success.</p>
 </div>
 
 <script>
