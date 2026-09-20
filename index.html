@@ -1,453 +1,104 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>LEOXIS Expansion v0.2</title>
-<meta name="description" content="LEOXIS Expansion — retail investment committee decision-support prototype." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LEOXIS Expansion v0.3</title>
+<meta name="description" content="LEOXIS Expansion — retail investment committee decision-support prototype.">
 <style>
-:root{
-  --bg:#f4efe7;--paper:#fbf8f2;--ink:#1e1b18;--soft:#6c665f;--line:#c8bfb4;
-  --accent:#b76c3d;--dark:#1d1a17;--ok:#315e47;--warn:#956120;--risk:#8f3f34;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Manrope,system-ui,-apple-system,Segoe UI,sans-serif}
-button,input,select,textarea{font:inherit}
-a{color:inherit}
-.shell{max-width:1180px;margin:auto;padding:0 18px 70px}
-.topbar{position:sticky;top:0;z-index:10;background:rgba(244,239,231,.94);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:16px 18px;margin:0 -18px 24px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.15em}.mark{width:44px;height:44px;display:grid;place-items:center;background:var(--dark);color:#fff;font-size:14px}
-.navbtn{border:1px solid var(--ink);background:transparent;padding:10px 12px;font-weight:700}
-.hero{padding:30px 0 22px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-size:12px;font-weight:800}
-h1{font-size:clamp(42px,8vw,78px);line-height:.94;letter-spacing:-.04em;margin:18px 0 16px}.lead{max-width:760px;font-size:18px;line-height:1.55;color:var(--soft)}
-.notice{border-left:3px solid var(--accent);padding:12px 16px;background:rgba(255,255,255,.35);margin:18px 0 26px;color:var(--soft)}
-.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:6px;position:sticky;top:77px;z-index:9;background:var(--bg)}
-.tab{white-space:nowrap;border:1px solid var(--line);padding:10px 14px;background:var(--paper);font-weight:700;font-size:13px}
-.tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-.panel{display:none}.panel.active{display:block}
-.card{background:var(--paper);border:1px solid var(--line);padding:20px;margin:14px 0}
-.card h2,.card h3{margin-top:0}.section-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin:26px 0 10px}.section-title h2{margin:0;font-size:28px;letter-spacing:-.02em}.muted{color:var(--soft)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);display:block;margin-bottom:7px}
-input,select,textarea{width:100%;border:1px solid var(--line);background:#fffaf4;padding:12px;color:var(--ink);border-radius:0}
-textarea{min-height:96px;resize:vertical}
-.field{margin-bottom:14px}.inline{display:flex;gap:8px;align-items:center}.inline input[type=checkbox]{width:auto;transform:scale(1.2)}
-.btn{border:0;background:var(--dark);color:white;padding:14px 18px;font-weight:800;letter-spacing:.03em}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--ink)}.btn.accent{background:var(--accent)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
-.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
-.metric{background:var(--paper);padding:16px}.metric b{display:block;font-size:24px;margin-top:8px}.metric small{color:var(--soft);text-transform:uppercase;letter-spacing:.08em;font-weight:800}
-.badge{display:inline-block;border:1px solid currentColor;padding:4px 7px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
-.ok{color:var(--ok)}.warn{color:var(--warn)}.risk{color:var(--risk)}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
-.condition{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}.condition strong{text-transform:uppercase;font-size:12px;letter-spacing:.08em}
-.scenario-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.scenario{border:1px solid var(--line);padding:14px;background:#fffaf4}.scenario h4{margin:0 0 12px}
-.dd{padding:12px 0;border-bottom:1px solid var(--line)}
-.footer-note{font-size:12px;color:var(--soft);line-height:1.6;margin-top:22px}
-hr{border:0;border-top:1px solid var(--line);margin:24px 0}
-@media(max-width:760px){
- .grid,.grid3,.scenario-controls{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}
- .condition{grid-template-columns:1fr}.hero{padding-top:10px}.tabs{top:77px}.metric b{font-size:20px}
- .section-title{align-items:flex-start;flex-direction:column}
-}
+:root{--bg:#f4efe7;--paper:#fbf8f2;--ink:#1e1b18;--soft:#6c665f;--line:#c8bfb4;--accent:#b76c3d;--dark:#1d1a17;--ok:#315e47;--warn:#956120;--risk:#8f3f34}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Manrope,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}.shell{max-width:1180px;margin:auto;padding:0 16px 70px}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(244,239,231,.95);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:14px 16px;margin:0 -16px 20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.15em}.mark{width:42px;height:42px;display:grid;place-items:center;background:var(--dark);color:#fff;font-size:13px}.navbtn{border:1px solid var(--ink);background:transparent;padding:10px 12px;font-weight:700}
+.hero{padding:22px 0 18px}.eyebrow{text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-size:12px;font-weight:800}
+h1{font-size:clamp(40px,8vw,74px);line-height:.95;letter-spacing:-.04em;margin:16px 0}.lead{max-width:760px;font-size:18px;line-height:1.5;color:var(--soft)}
+.notice{border-left:3px solid var(--accent);padding:12px 14px;background:rgba(255,255,255,.35);margin:16px 0 22px;color:var(--soft)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;position:sticky;top:71px;z-index:9;background:var(--bg);padding-bottom:6px}
+.tab{border:1px solid var(--line);padding:10px 7px;background:var(--paper);font-weight:700;font-size:12px}.tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.panel{display:none}.panel.active{display:block}.card{background:var(--paper);border:1px solid var(--line);padding:18px;margin:14px 0}
+.section-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;margin:24px 0 10px}.section-title h2{margin:0;font-size:28px}.muted{color:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{margin-bottom:13px}
+label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);display:block;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid var(--line);background:#fffaf4;padding:12px;color:var(--ink);border-radius:0;min-height:46px}textarea{min-height:86px}
+.inline{display:flex;gap:8px;align-items:center}.inline input{width:auto}.btn{border:0;background:var(--dark);color:#fff;padding:13px 16px;font-weight:800}.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--ink)}.btn.accent{background:var(--accent)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.metric{background:var(--paper);padding:15px}.metric b{display:block;font-size:22px;margin-top:7px}.metric small{color:var(--soft);text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.badge{display:inline-block;border:1px solid currentColor;padding:4px 7px;font-size:11px;font-weight:800;text-transform:uppercase}.ok{color:var(--ok)}.warn{color:var(--warn)}.risk{color:var(--risk)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--soft)}
+.table-wrap{overflow:auto}.condition{display:grid;grid-template-columns:165px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.condition strong{text-transform:uppercase;font-size:11px;letter-spacing:.07em}
+.scenario-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.scenario{border:1px solid var(--line);padding:13px;background:#fffaf4}.scenario h4{margin:0 0 10px}.dd{padding:11px 0;border-bottom:1px solid var(--line)}
+.footer-note{font-size:12px;color:var(--soft);line-height:1.55;margin-top:20px}.gapbox{border:1px solid var(--line);background:#fffaf4;padding:14px;margin-top:14px}.gapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}.gapitem{background:var(--paper);padding:13px}.gapitem b{display:block;margin-top:5px}
+@media(max-width:700px){.grid,.scenario-controls{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.condition{grid-template-columns:1fr}.section-title{align-items:flex-start;flex-direction:column}.gapgrid{grid-template-columns:1fr}.metric b{font-size:19px}h1{font-size:42px}}
 </style>
-
-<style id="v02-mobile-polish">
-/* LEOXIS Expansion v0.2 — mobile UX polish only; model logic unchanged */
-@media (max-width: 640px) {
-  body { overflow-x: hidden; }
-  .shell { padding-left: 14px !important; padding-right: 14px !important; }
-  .topbar { gap: 10px !important; padding-top: 12px !important; padding-bottom: 12px !important; }
-  .brand { gap: 10px !important; }
-  .brand > div:first-child { flex: 0 0 auto; }
-  .topbar button, .topbar .btn { padding: 12px 14px !important; font-size: 14px !important; line-height: 1.15 !important; }
-
-  /* Convert the 3-stage navigation from clipped horizontal tabs to a compact grid. */
-  .steps, .tabs, .stepbar, .navsteps {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    width: 100% !important;
-    overflow: visible !important;
-    gap: 4px !important;
-  }
-  .steps > *, .tabs > *, .stepbar > *, .navsteps > * {
-    min-width: 0 !important;
-    width: auto !important;
-    white-space: normal !important;
-    text-align: center !important;
-    padding: 10px 6px !important;
-    font-size: 12px !important;
-    line-height: 1.15 !important;
-  }
-
-  h1 { font-size: clamp(34px, 10vw, 46px) !important; line-height: .98 !important; }
-  h2 { font-size: 27px !important; line-height: 1.05 !important; }
-  h3 { font-size: 21px !important; line-height: 1.12 !important; }
-  p { line-height: 1.38 !important; }
-
-  .card, .panel, section { scroll-margin-top: 120px; }
-  .metrics, .metric-grid, .kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-  .metric, .kpi {
-    min-width: 0 !important;
-    padding: 16px 14px !important;
-  }
-  .metric strong, .kpi strong { overflow-wrap: anywhere; }
-
-  input, select, textarea { min-height: 48px; font-size: 16px !important; }
-  button, .btn { min-height: 48px; }
-
-  table { font-size: 13px !important; }
-  .table-wrap, .table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-
-  /* Make management actions easier to scan without changing their content. */
-  .tag, .badge, .pill { line-height: 1.15 !important; }
-}
-</style>
-
 </head>
 <body>
 <div class="shell">
-  <header class="topbar">
-    <div class="brand"><div class="mark">LX</div>LEOXIS</div>
-    <button class="navbtn" onclick="loadDemo()">Load synthetic demo</button>
-  </header>
+<header class="topbar"><div class="brand"><div class="mark">LX</div>LEOXIS</div><button class="navbtn" onclick="loadDemo()">Load synthetic demo</button></header>
+<section class="hero"><div class="eyebrow">Decision intelligence for operators</div><h1>Expansion<br>Investment Review</h1><p class="lead">Challenge a proposed store business case, quantify the economics, identify what must be true, and turn missing evidence into management due diligence.</p><div class="notice">Prototype v0.3 · deterministic calculations only · no approval/reject verdict · case data stays in this browser session.</div></section>
+<div class="tabs"><button class="tab active" data-tab="input">1. Case input</button><button class="tab" data-tab="review">2. Management review</button><button class="tab" data-tab="conditions">3. Decision conditions</button></div>
 
-  <section class="hero">
-    <div class="eyebrow">Decision intelligence for operators</div>
-    <h1>Expansion<br/>Investment Review</h1>
-    <p class="lead">Challenge a proposed store business case, quantify the economics, identify what must be true, and turn missing evidence into management due diligence.</p>
-    <div class="notice">Prototype v0.1 · deterministic calculations only · no approval/reject verdict · case data stays in this browser session.</div>
-  </section>
+<section id="input" class="panel active">
+<div class="section-title"><h2>Case input</h2><span class="muted">Required fields marked *</span></div>
+<div class="card"><h3>Site & format</h3><div class="grid">
+<div class="field"><label>Currency *</label><select id="currency"><option>MYR</option><option>USD</option><option>EUR</option><option>SGD</option><option>THB</option><option>IDR</option><option>PHP</option><option>SAR</option></select></div>
+<div class="field"><label>Country *</label><input id="country"></div><div class="field"><label>City *</label><input id="city"></div><div class="field"><label>Location / site name *</label><input id="siteName"></div>
+<div class="field"><label>Store format *</label><input id="storeFormat"></div><div class="field"><label>Selling area (m²) *</label><input id="sellingArea" type="number"></div><div class="field"><label>Lease term (years)</label><input id="leaseTermYears" type="number" step=".5"></div></div></div>
+<div class="card"><h3>Investment & lease</h3><div class="grid"><div class="field"><label>Capex *</label><input id="capex" type="number"></div><div class="field"><label>Deposit / other initial investment</label><input id="deposit" type="number"></div><div class="field"><label>Monthly rent *</label><input id="monthlyRent" type="number"></div><div class="field"><label>Monthly service charge</label><input id="serviceCharge" type="number"></div><div class="field"><label>Turnover rent (% sales)</label><input id="turnoverRentPct" type="number" step=".1"></div></div></div>
+<div class="card"><h3>Sales, margin & operating cost</h3><div class="grid"><div class="field"><label>Projected monthly sales *</label><input id="projectedMonthlySales" type="number"></div><div class="field"><label>Gross margin % *</label><input id="grossMarginPct" type="number" step=".1"></div></div>
+<div class="field"><label>Operating cost method</label><select id="opexMode" onchange="toggleOpex()"><option value="payroll">Payroll + detailed opex</option><option value="total">Total monthly store opex</option></select></div>
+<div id="payrollMode" class="grid"><div class="field"><label>Payroll *</label><input id="payroll" type="number"></div><div class="field"><label>Utilities</label><input id="utilities" type="number"></div><div class="field"><label>Maintenance</label><input id="maintenance" type="number"></div><div class="field"><label>Other store opex *</label><input id="otherStoreOpex" type="number"></div></div>
+<div id="totalMode" style="display:none"><div class="field"><label>Total monthly store opex *</label><input id="totalMonthlyStoreOpex" type="number"></div></div></div>
+<div class="card"><h3>Market evidence & context</h3><div class="grid"><div class="field"><label>Catchment population</label><input id="catchmentPopulation" type="number"></div><div class="field"><label>Traffic / footfall</label><input id="footfall" type="number"></div><div class="field"><label>Ramp-up months</label><input id="rampUpMonths" type="number"></div></div>
+<div class="field"><label>Competitors</label><textarea id="competitors"></textarea></div><div class="field"><label>Notes / evidence references</label><textarea id="notes"></textarea></div><h3>Evidence confirmations</h3><div class="grid">
+<label class="inline"><input type="checkbox" id="salesComparableEvidence"> Comparable-store evidence supports sales</label><label class="inline"><input type="checkbox" id="rentDocumented"> Rent / lease economics documented</label><label class="inline"><input type="checkbox" id="capexQuoted"> Capex supported by quotations</label><label class="inline"><input type="checkbox" id="marginEvidence"> Margin supported by category / mix evidence</label><label class="inline"><input type="checkbox" id="footfallMeasured"> Footfall measured</label><label class="inline"><input type="checkbox" id="catchmentStudy"> Catchment study available</label></div></div>
+<div class="actions"><button class="btn accent" onclick="runReview()">Run management review</button><button class="btn secondary" onclick="clearCase()">Clear</button></div>
+</section>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="input">1. Case input</button>
-    <button class="tab" data-tab="review">2. Management review</button>
-    <button class="tab" data-tab="conditions">3. Decision conditions</button>
-  </div>
+<section id="review" class="panel"><div class="section-title"><h2>Executive decision screen</h2><span id="caseTitle" class="muted"></span></div><div id="validation" class="notice" style="display:none"></div>
+<div class="metrics"><div class="metric"><small>Monthly sales</small><b id="mSales">—</b></div><div class="metric"><small>Store EBITDA</small><b id="mEbitda">—</b></div><div class="metric"><small>EBITDA margin</small><b id="mMargin">—</b></div><div class="metric"><small>Initial investment</small><b id="mInvestment">—</b></div><div class="metric"><small>Payback</small><b id="mPayback">—</b></div><div class="metric"><small>Breakeven sales</small><b id="mBreakeven">—</b></div><div class="metric"><small>Occupancy cost</small><b id="mOccupancy">—</b></div><div class="metric"><small>Evidence confidence</small><b id="mConfidence">—</b><span id="mCoverage" class="muted"></span></div><div class="metric"><small>Economic status</small><b id="mEconomic">—</b></div></div>
+<div class="card"><h3>Scenario assumptions</h3><p class="muted">Illustrative defaults only. Adjust to match your own risk case.</p><div class="scenario-controls">
+<div class="scenario"><h4>Downside</h4><div class="field"><label>Sales change %</label><input id="downSales" type="number" value="-20"></div><div class="field"><label>GM change (points)</label><input id="downGm" type="number" value="-2" step=".5"></div><div class="field"><label>Opex change %</label><input id="downOpex" type="number" value="5"></div></div><div class="scenario"><h4>Base</h4><p class="muted">Management inputs</p></div><div class="scenario"><h4>Upside</h4><div class="field"><label>Sales change %</label><input id="upSales" type="number" value="10"></div><div class="field"><label>GM change (points)</label><input id="upGm" type="number" value="1" step=".5"></div><div class="field"><label>Opex change %</label><input id="upOpex" type="number" value="-3"></div></div></div>
+<div class="actions"><button class="btn secondary" onclick="refreshScenarios()">Recalculate scenarios</button></div><div class="table-wrap"><table><thead><tr><th></th><th>Downside</th><th>Base</th><th>Upside</th></tr></thead><tbody id="scenarioTable"></tbody></table></div></div>
+<div class="card"><h3>Sensitivity ranking</h3><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Driver</th><th>Stress</th><th>EBITDA change</th><th>Payback change</th></tr></thead><tbody id="sensitivityTable"></tbody></table></div></div>
+<div class="card"><h3>Assumption challenge</h3><div id="flags"></div></div><div class="card"><h3>Risks & required DD</h3><div id="ddTasks"></div></div>
+<div class="actions"><button class="btn" onclick="showTab('conditions')">View decision conditions</button><button class="btn secondary" onclick="showTab('input')">Edit assumptions</button></div></section>
 
-  <section id="input" class="panel active">
-    <div class="section-title"><h2>Case input</h2><span class="muted">Required fields marked *</span></div>
-
-    <div class="card">
-      <h3>Site & format</h3>
-      <div class="grid">
-        <div class="field"><label>Currency *</label><select id="currency"><option>MYR</option><option>USD</option><option>EUR</option><option>SGD</option><option>THB</option><option>IDR</option><option>PHP</option><option>SAR</option></select></div>
-        <div class="field"><label>Country *</label><input id="country"></div>
-        <div class="field"><label>City *</label><input id="city"></div>
-        <div class="field"><label>Location / site name *</label><input id="siteName"></div>
-        <div class="field"><label>Store format *</label><input id="storeFormat"></div>
-        <div class="field"><label>Selling area (m²) *</label><input id="sellingArea" type="number" min="0"></div>
-        <div class="field"><label>Opening date</label><input id="openingDate" type="date"></div>
-        <div class="field"><label>Lease term (years)</label><input id="leaseTermYears" type="number" min="0" step=".5"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Investment & lease</h3>
-      <div class="grid">
-        <div class="field"><label>Capex *</label><input id="capex" type="number" min="0"></div>
-        <div class="field"><label>Deposit / other initial investment</label><input id="deposit" type="number" min="0"></div>
-        <div class="field"><label>Monthly rent *</label><input id="monthlyRent" type="number" min="0"></div>
-        <div class="field"><label>Monthly service charge</label><input id="serviceCharge" type="number" min="0"></div>
-        <div class="field"><label>Turnover rent (% of sales)</label><input id="turnoverRentPct" type="number" min="0" step=".1"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Sales, margin & operating cost</h3>
-      <div class="grid">
-        <div class="field"><label>Projected monthly sales *</label><input id="projectedMonthlySales" type="number" min="0"></div>
-        <div class="field"><label>Gross margin % *</label><input id="grossMarginPct" type="number" min="0" max="100" step=".1"></div>
-      </div>
-      <div class="field"><label>Operating cost method</label>
-        <select id="opexMode" onchange="toggleOpex()"><option value="payroll">Payroll + detailed opex</option><option value="total">Total monthly store opex</option></select>
-      </div>
-      <div id="payrollMode" class="grid">
-        <div class="field"><label>Payroll *</label><input id="payroll" type="number" min="0"></div>
-        <div class="field"><label>Utilities</label><input id="utilities" type="number" min="0"></div>
-        <div class="field"><label>Maintenance</label><input id="maintenance" type="number" min="0"></div>
-        <div class="field"><label>Other store opex *</label><input id="otherStoreOpex" type="number" min="0"></div>
-      </div>
-      <div id="totalMode" style="display:none">
-        <div class="field"><label>Total monthly store opex *</label><input id="totalMonthlyStoreOpex" type="number" min="0"></div>
-        <div class="field"><label>What does total opex include?</label><textarea id="totalOpexIncludes"></textarea></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>Market evidence & context</h3>
-      <div class="grid">
-        <div class="field"><label>Catchment population</label><input id="catchmentPopulation" type="number" min="0"></div>
-        <div class="field"><label>Traffic / footfall</label><input id="footfall" type="number" min="0"></div>
-        <div class="field"><label>Ramp-up months</label><input id="rampUpMonths" type="number" min="0"></div>
-        <div class="field"><label>Ramp-up starting sales %</label><input id="rampUpStartPct" type="number" min="0" max="100"></div>
-      </div>
-      <div class="field"><label>Competitors</label><textarea id="competitors"></textarea></div>
-      <div class="field"><label>Mall / site information</label><textarea id="siteInformation"></textarea></div>
-      <div class="field"><label>Notes / evidence references</label><textarea id="notes"></textarea></div>
-      <hr/>
-      <h3>Evidence confirmations</h3>
-      <div class="grid">
-        <label class="inline"><input type="checkbox" id="salesComparableEvidence"> Comparable-store evidence supports sales</label>
-        <label class="inline"><input type="checkbox" id="rentDocumented"> Rent / lease economics documented</label>
-        <label class="inline"><input type="checkbox" id="capexQuoted"> Capex supported by quotations</label>
-        <label class="inline"><input type="checkbox" id="marginEvidence"> Margin supported by category / mix evidence</label>
-        <label class="inline"><input type="checkbox" id="footfallMeasured"> Footfall measured</label>
-        <label class="inline"><input type="checkbox" id="catchmentStudy"> Catchment study available</label>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn accent" onclick="runReview()">Run management review</button>
-      <button class="btn secondary" onclick="clearCase()">Clear</button>
-    </div>
-  </section>
-
-  <section id="review" class="panel">
-    <div class="section-title"><h2>Executive decision screen</h2><span id="caseTitle" class="muted"></span></div>
-    <div id="validation" class="notice" style="display:none"></div>
-
-    <div class="metrics">
-      <div class="metric"><small>Monthly sales</small><b id="mSales">—</b></div>
-      <div class="metric"><small>Store EBITDA</small><b id="mEbitda">—</b></div>
-      <div class="metric"><small>EBITDA margin</small><b id="mMargin">—</b></div>
-      <div class="metric"><small>Initial investment</small><b id="mInvestment">—</b></div>
-      <div class="metric"><small>Payback</small><b id="mPayback">—</b></div>
-      <div class="metric"><small>Breakeven sales</small><b id="mBreakeven">—</b></div>
-      <div class="metric"><small>Occupancy cost</small><b id="mOccupancy">—</b></div>
-      <div class="metric"><small>Confidence</small><b id="mConfidence">—</b><span id="mCoverage" class="muted"></span></div>
-    </div>
-
-    <div class="card">
-      <h3>Scenario assumptions</h3>
-      <p class="muted">Illustrative defaults only. Adjust them to match your own risk case.</p>
-      <div class="scenario-controls">
-        <div class="scenario">
-          <h4>Downside</h4>
-          <div class="field"><label>Sales change %</label><input id="downSales" type="number" value="-20" step="1"></div>
-          <div class="field"><label>GM change (points)</label><input id="downGm" type="number" value="-2" step=".5"></div>
-          <div class="field"><label>Opex change %</label><input id="downOpex" type="number" value="5" step="1"></div>
-        </div>
-        <div class="scenario">
-          <h4>Base</h4><p class="muted">Management inputs</p>
-        </div>
-        <div class="scenario">
-          <h4>Upside</h4>
-          <div class="field"><label>Sales change %</label><input id="upSales" type="number" value="10" step="1"></div>
-          <div class="field"><label>GM change (points)</label><input id="upGm" type="number" value="1" step=".5"></div>
-          <div class="field"><label>Opex change %</label><input id="upOpex" type="number" value="-3" step="1"></div>
-        </div>
-      </div>
-      <div class="actions"><button class="btn secondary" onclick="refreshScenarios()">Recalculate scenarios</button></div>
-      <div style="overflow:auto"><table><thead><tr><th></th><th>Downside</th><th>Base</th><th>Upside</th></tr></thead><tbody id="scenarioTable"></tbody></table></div>
-    </div>
-
-    <div class="card">
-      <h3>Sensitivity ranking</h3>
-      <p class="muted">Each driver is moved adversely by 10% from the base case and the model is recalculated.</p>
-      <div style="overflow:auto"><table><thead><tr><th>Rank</th><th>Driver</th><th>Stress</th><th>EBITDA change</th><th>Payback change</th></tr></thead><tbody id="sensitivityTable"></tbody></table></div>
-    </div>
-
-    <div class="card">
-      <h3>Assumption challenge</h3>
-      <div id="flags"></div>
-    </div>
-
-    <div class="card">
-      <h3>Risks & required DD</h3>
-      <div id="ddTasks"></div>
-    </div>
-
-    <div class="actions">
-      <button class="btn" onclick="showTab('conditions')">View decision conditions</button>
-      <button class="btn secondary" onclick="showTab('input')">Edit assumptions</button>
-    </div>
-  </section>
-
-  <section id="conditions" class="panel">
-    <div class="section-title"><h2>What must be true?</h2><span class="muted">Management guardrails, not an approval verdict</span></div>
-    <div class="card">
-      <div class="grid">
-        <div class="field"><label>Target EBITDA margin %</label><input id="targetMargin" type="number" value="10" step=".5" onchange="renderConditions()"></div>
-        <div class="field"><label>Target payback months</label><input id="targetPayback" type="number" value="24" step="1" onchange="renderConditions()"></div>
-      </div>
-      <div id="conditionsList"></div>
-    </div>
-
-    <div class="card">
-      <h3>Management decision conditions</h3>
-      <div id="decisionConditions"></div>
-    </div>
-
-    <div class="card">
-      <h3>Post-opening measures</h3>
-      <div class="dd"><strong>F90</strong><div class="muted">Compare actual sales, GM, occupancy cost, payroll %, EBITDA and ramp versus the approved business case.</div></div>
-      <div class="dd"><strong>F180</strong><div class="muted">Re-run the investment case using actual performance and identify which original assumptions were right or wrong.</div></div>
-    </div>
-
-    <div class="actions"><button class="btn secondary" onclick="showTab('review')">Back to review</button></div>
-  </section>
-
-  <p class="footer-note">LEOXIS Expansion v0.2 is a prototype decision-support tool. It does not replace management judgment, legal review, lease diligence, accounting advice, or investment committee authority. Confidence is a rules-based evidence-completeness indicator, not a probability of success.</p>
+<section id="conditions" class="panel"><div class="section-title"><h2>What must be true?</h2><span class="muted">Management guardrails, not an approval verdict</span></div>
+<div class="card"><div class="grid"><div class="field"><label>Target EBITDA margin %</label><input id="targetMargin" type="number" value="10" step=".5" onchange="renderAll()"></div><div class="field"><label>Target payback months</label><input id="targetPayback" type="number" value="24" onchange="renderAll()"></div></div><div id="conditionsList"></div><div class="gapbox"><h3>Gap to management targets</h3><div id="targetGaps" class="gapgrid"></div></div></div>
+<div class="card"><h3>Management decision conditions</h3><div id="decisionConditions"></div></div>
+<div class="card"><h3>Post-opening measures</h3><div class="dd"><strong>F90</strong><div class="muted">Compare actual sales, GM, occupancy cost, payroll %, EBITDA and ramp versus the approved business case.</div></div><div class="dd"><strong>F180</strong><div class="muted">Re-run the investment case using actual performance and identify which original assumptions were right or wrong.</div></div></div>
+<div class="actions"><button class="btn secondary" onclick="showTab('review')">Back to review</button></div></section>
+<p class="footer-note">LEOXIS Expansion v0.3 is a prototype decision-support tool. It does not replace management judgment, legal review, lease diligence, accounting advice, or investment committee authority. Evidence Confidence measures rules-based evidence completeness — not investment quality or probability of success.</p>
 </div>
-
 <script>
-const $=id=>document.getElementById(id);
-let current=null;
-
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
-function showTab(id){
-  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function num(id){const v=parseFloat($(id).value);return Number.isFinite(v)?v:0}
-function str(id){return $(id).value.trim()}
-function checked(id){return $(id).checked}
-function money(v,c){if(!Number.isFinite(v))return '—';return new Intl.NumberFormat('en',{style:'currency',currency:c,maximumFractionDigits:0}).format(v)}
-function pct(v){return Number.isFinite(v)?v.toFixed(1)+'%':'—'}
-function months(v){return v==null||!Number.isFinite(v)?'No payback':v.toFixed(1)+' mo'}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-function toggleOpex(){
- const t=$('opexMode').value==='total';
- $('totalMode').style.display=t?'block':'none'; $('payrollMode').style.display=t?'none':'grid';
-}
-function getInput(){
- return {
- currency:$('currency').value,country:str('country'),city:str('city'),siteName:str('siteName'),storeFormat:str('storeFormat'),
- sellingArea:num('sellingArea'),capex:num('capex'),monthlyRent:num('monthlyRent'),projectedMonthlySales:num('projectedMonthlySales'),
- grossMarginPct:num('grossMarginPct'),opexMode:$('opexMode').value,payroll:num('payroll'),otherStoreOpex:num('otherStoreOpex'),
- totalMonthlyStoreOpex:num('totalMonthlyStoreOpex'),totalOpexIncludes:str('totalOpexIncludes'),openingDate:$('openingDate').value,
- deposit:num('deposit'),leaseTermYears:num('leaseTermYears'),serviceCharge:num('serviceCharge'),turnoverRentPct:num('turnoverRentPct'),
- rampUpMonths:num('rampUpMonths'),rampUpStartPct:num('rampUpStartPct'),utilities:num('utilities'),maintenance:num('maintenance'),
- catchmentPopulation:num('catchmentPopulation'),footfall:num('footfall'),competitors:str('competitors'),siteInformation:str('siteInformation'),notes:str('notes'),
- evidence:{salesComparableEvidence:checked('salesComparableEvidence'),rentDocumented:checked('rentDocumented'),capexQuoted:checked('capexQuoted'),
- marginEvidence:checked('marginEvidence'),footfallMeasured:checked('footfallMeasured'),catchmentStudy:checked('catchmentStudy')}
- }
-}
-function requiredMissing(i){
- const m=[];[['Country',i.country],['City',i.city],['Site name',i.siteName],['Store format',i.storeFormat],['Selling area',i.sellingArea],['Capex',i.capex],['Monthly rent',i.monthlyRent],['Projected monthly sales',i.projectedMonthlySales],['Gross margin',i.grossMarginPct]].forEach(x=>{if(!x[1])m.push(x[0])});
- if(i.opexMode==='payroll'){if(!i.payroll)m.push('Payroll'); if(!i.otherStoreOpex)m.push('Other store opex')}
- else if(!i.totalMonthlyStoreOpex)m.push('Total monthly store opex');
- return m;
-}
-function controllable(i,adj=0){const base=i.opexMode==='total'?i.totalMonthlyStoreOpex:i.payroll+i.utilities+i.maintenance+i.otherStoreOpex;return base*(1+adj/100)}
-function compute(i,a={salesPct:0,gmPoints:0,opexPct:0},mods={}){
- const sales=Math.max(0,i.projectedMonthlySales*(1+a.salesPct/100));
- const gm=Math.max(0,i.grossMarginPct+a.gmPoints);
- const rent=(mods.rent??i.monthlyRent), service=(mods.service??i.serviceCharge), capex=(mods.capex??i.capex);
- const tr=sales*i.turnoverRentPct/100, opex=controllable(i,a.opexPct), fixed=rent+service+opex;
- const gp=sales*gm/100, ebitda=gp-fixed-tr, margin=sales?ebitda/sales*100:0, inv=capex+i.deposit;
- const pay=ebitda>0?inv/ebitda:null, occ=sales?(rent+service+tr)/sales*100:0, payroll=i.opexMode==='payroll'&&sales?i.payroll/sales*100:null;
- const cm=gm-i.turnoverRentPct, be=cm>0?fixed/(cm/100):null;
- return {sales,gm,gp,rent,service,tr,opex,fixed,ebitda,margin,inv,pay,occ,payroll,cm,be};
-}
-function evidenceGaps(i){
- const g=[]; const e=i.evidence;
- if(!e.salesComparableEvidence)g.push(['Projected sales not confirmed against comparable-store evidence',3,'sales']);
- if(!e.marginEvidence)g.push(['Gross margin not supported by category / mix evidence',2,'gm']);
- if(!e.rentDocumented)g.push(['Rent and lease terms not documented',3,'rent']);
- if(!e.capexQuoted)g.push(['Capex not supported by supplier quotations',2,'capex']);
- if(!e.footfallMeasured&&!i.footfall)g.push(['No measured traffic / footfall evidence',2,'footfall']);
- if(!e.catchmentStudy&&!i.catchmentPopulation)g.push(['No catchment or population evidence',2,'catchment']);
- if(!i.competitors)g.push(['Competitive set not described',1,'competition']);
- if(!i.leaseTermYears)g.push(['Lease term not captured',2,'lease']);
- if(!i.rampUpMonths)g.push(['No ramp-up assumption',2,'ramp']);
- return g;
-}
-function confidence(i){const g=evidenceGaps(i),lost=g.reduce((s,x)=>s+x[1],0),coverage=Math.max(0,Math.round((19-lost)/19*100));return {coverage,level:coverage>=75?'High':coverage>=45?'Medium':'Low',g}}
-function sensitivity(i){
- const b=compute(i),rows=[];
- function push(driver,move,v){rows.push({driver,move,ed:v.ebitda-b.ebitda,pd:b.pay!=null&&v.pay!=null?v.pay-b.pay:null})}
- push('Projected sales','-10%',compute(i,{salesPct:-10,gmPoints:0,opexPct:0}));
- push('Gross margin','-10% relative',compute(i,{salesPct:0,gmPoints:-(i.grossMarginPct*.1),opexPct:0}));
- push('Rent & occupancy','+10%',compute(i,{}, {rent:i.monthlyRent*1.1,service:i.serviceCharge*1.1}));
- push('Capex','+10%',compute(i,{}, {capex:i.capex*1.1}));
- push('Store opex','+10%',compute(i,{salesPct:0,gmPoints:0,opexPct:10}));
- const score=r=>r.pd!=null&&b.pay!=null?Math.abs(r.pd):Math.abs(r.ed)/1000; return rows.sort((a,b)=>score(b)-score(a));
-}
-function flags(i){
- const b=compute(i),sens=sensitivity(i).slice(0,2).map(x=>x.driver),e=i.evidence,F=[];
- const add=(l,d,s)=>F.push({l,d,s});
- add('Projected monthly sales',e.salesComparableEvidence?'Management confirms comparable-store evidence is available.':'No comparable-store evidence recorded.',e.salesComparableEvidence?(sens.includes('Projected sales')?'High sensitivity':'Supported'):'Needs validation');
- add('Gross margin',e.marginEvidence?'Margin evidence confirmed by management.':'Margin assumption not evidenced by category or mix data.',e.marginEvidence?'Supported':'Needs validation');
- add('Rent and occupancy',(e.rentDocumented?'Lease economics documented. ':'Lease terms indicative only. ')+`Occupancy cost is ${b.occ.toFixed(1)}% of projected sales.`,e.rentDocumented?(sens.includes('Rent & occupancy')?'High sensitivity':'Supported'):'Needs validation');
- add('Capex and initial investment',e.capexQuoted?'Capex quotation evidence confirmed.':'Capex is not supported by quotations.',e.capexQuoted?'Supported':'Needs validation');
- if(i.opexMode==='total')add('Store operating cost basis',i.totalOpexIncludes?`Total opex scope: ${i.totalOpexIncludes}`:'Total opex entered without a stated scope; double counting cannot be excluded.',i.totalOpexIncludes?'Supported':'Inconsistent');
- if(b.be!=null&&b.be>i.projectedMonthlySales)add('Breakeven above plan','Breakeven sales exceed projected sales.','Inconsistent');
- if(b.cm<=0)add('Contribution margin','Gross margin does not exceed turnover rent; no sales level reaches breakeven.','Inconsistent');
- if(i.leaseTermYears&&b.pay!=null&&b.pay>i.leaseTermYears*12)add('Payback vs lease term','Simple payback is longer than the lease term entered.','Inconsistent');
- if(i.sellingArea&&i.projectedMonthlySales)add('Sales density',`Implied ${(i.projectedMonthlySales/i.sellingArea).toFixed(0)} ${i.currency} per m² per month. Benchmark against the retailer's own network.`,'Needs validation');
- if(!i.rampUpMonths)add('Ramp-up','No ramp-up entered, so simple payback assumes full run-rate sales from month one.','High sensitivity');
- return F;
-}
-function ddTasks(i){
- const b=compute(i),e=i.evidence,T=[],add=(task,p)=>T.push({task,p});
- if(!e.salesComparableEvidence)add('Build the sales projection from comparable stores or a documented catchment model.','Critical before commitment');
- if(!e.rentDocumented)add('Obtain the draft lease: base rent, service charge, turnover rent, escalation, term and exit terms.','Critical before commitment');
- if(!e.capexQuoted)add('Obtain firm capex quotations and a contingency allowance.','Critical before commitment');
- if(!e.marginEvidence)add('Validate gross margin against planned category mix and landed cost.','Critical before commitment');
- if(!e.footfallMeasured&&!i.footfall)add('Measure site traffic / footfall across weekday and weekend periods.','Validate before opening');
- if(!e.catchmentStudy&&!i.catchmentPopulation)add('Document catchment population and accessibility.','Validate before opening');
- if(!i.competitors)add('Map the competitive set and announced openings nearby.','Validate before opening');
- if(!i.rampUpMonths)add('Agree a ramp-up curve and reflect it in payback expectations.','Validate before opening');
- if(!i.leaseTermYears)add('Confirm lease term and break options against expected payback.','Validate before opening');
- if(b.occ>0)add('Track occupancy cost, gross margin and payroll as a % of actual sales monthly.','Monitor after opening');
- add('Compare actual sales against the base case at F90 and F180 and re-run this analysis.','Monitor after opening'); return T;
-}
-function runReview(){
- current=getInput(); const missing=requiredMissing(current);
- if(missing.length){$('validation').style.display='block';$('validation').innerHTML='<b>Complete required fields:</b> '+missing.map(esc).join(', ');showTab('review');return}
- $('validation').style.display='none'; renderAll(); showTab('review');
-}
-function renderAll(){
- const i=current,b=compute(i),c=confidence(i); $('caseTitle').textContent=[i.siteName,i.city,i.country].filter(Boolean).join(' · ');
- $('mSales').textContent=money(b.sales,i.currency); $('mEbitda').textContent=money(b.ebitda,i.currency); $('mMargin').textContent=pct(b.margin); $('mInvestment').textContent=money(b.inv,i.currency);
- $('mPayback').textContent=months(b.pay); $('mBreakeven').textContent=b.be?money(b.be,i.currency):'Not achievable'; $('mOccupancy').textContent=pct(b.occ); $('mConfidence').textContent=c.level; $('mCoverage').textContent=' '+c.coverage+'% evidence coverage';
- refreshScenarios(); renderSensitivity(); renderFlags(); renderDD(); renderConditions();
-}
-function scenarioAdj(prefix){return {salesPct:num(prefix+'Sales'),gmPoints:num(prefix+'Gm'),opexPct:num(prefix+'Opex')}}
-function refreshScenarios(){
- if(!current)return; const i=current,vals=[compute(i,scenarioAdj('down')),compute(i),compute(i,scenarioAdj('up'))],rows=[
- ['Sales',x=>money(x.sales,i.currency)],['GM',x=>pct(x.gm)],['EBITDA',x=>money(x.ebitda,i.currency)],['EBITDA margin',x=>pct(x.margin)],['Payback',x=>months(x.pay)]];
- $('scenarioTable').innerHTML=rows.map(r=>`<tr><th>${r[0]}</th>${vals.map(v=>`<td>${r[1](v)}</td>`).join('')}</tr>`).join('');
-}
-function renderSensitivity(){
- const i=current,S=sensitivity(i); $('sensitivityTable').innerHTML=S.map((r,k)=>`<tr><td>${k+1}</td><td><b>${r.driver}</b></td><td>${r.move}</td><td>${money(r.ed,i.currency)}</td><td>${r.pd==null?'—':(r.pd>=0?'+':'')+r.pd.toFixed(1)+' mo'}</td></tr>`).join('');
-}
-function statusClass(s){return s==='Supported'?'ok':s==='Inconsistent'?'risk':'warn'}
-function renderFlags(){
- $('flags').innerHTML=flags(current).map(f=>`<div class="dd"><span class="badge ${statusClass(f.s)}">${esc(f.s)}</span><h4 style="margin:8px 0 4px">${esc(f.l)}</h4><div class="muted">${esc(f.d)}</div></div>`).join('');
-}
-function renderDD(){
- $('ddTasks').innerHTML=ddTasks(current).map(x=>`<div class="dd"><span class="badge ${x.p.startsWith('Critical')?'risk':x.p.startsWith('Validate')?'warn':'ok'}">${esc(x.p)}</span><div style="margin-top:7px">${esc(x.task)}</div></div>`).join('');
-}
-function salesForTargetMargin(b,t){return b.cm<=t?null:b.fixed/((b.cm-t)/100)}
-function salesForTargetPayback(b,m){if(m<=0||b.cm<=0)return null;return (b.fixed+b.inv/m)/(b.cm/100)}
-function renderConditions(){
- if(!current)return; const i=current,b=compute(i),tm=num('targetMargin'),tp=num('targetPayback'),sm=salesForTargetMargin(b,tm),sp=salesForTargetPayback(b,tp),c=confidence(i);
- $('conditionsList').innerHTML=`
- <div class="condition"><strong>Break-even</strong><div>Monthly sales must be at least <b>${b.be?money(b.be,i.currency):'not mathematically achievable'}</b> under current margin and cost assumptions.</div></div>
- <div class="condition"><strong>${tm}% EBITDA margin</strong><div>${sm?`Requires monthly sales of approximately <b>${money(sm,i.currency)}</b>.`:'Not achievable with the current contribution margin.'}</div></div>
- <div class="condition"><strong>${tp}-month payback</strong><div>${sp?`Requires monthly sales of approximately <b>${money(sp,i.currency)}</b> at current margin and fixed-cost assumptions.`:'Not achievable under current assumptions.'}</div></div>
- <div class="condition"><strong>Evidence confidence</strong><div><b>${c.level}</b> (${c.coverage}% rules-based evidence coverage). This is not a probability of success.</div></div>`;
- const top=sensitivity(i)[0]?.driver||'key economics'; const gaps=evidenceGaps(i).map(x=>x[0]);
- $('decisionConditions').innerHTML=`
- <div class="condition"><strong>Proceed subject to</strong><div>Evidence supporting sales, margin, lease economics and capex; and economics remaining above breakeven after agreed downside stress.</div></div>
- <div class="condition"><strong>Renegotiate</strong><div>Where lease, capex or other fixed-cost terms materially improve the economics of the highest-sensitivity driver: <b>${esc(top)}</b>.</div></div>
- <div class="condition"><strong>Further DD</strong><div>${gaps.length?gaps.slice(0,5).map(esc).join('; '):'No major evidence gaps recorded in the current input.'}</div></div>
- <div class="condition"><strong>Reassess if</strong><div>Expected monthly sales fall below <b>${b.be?money(b.be,i.currency):'breakeven'}</b>, or gross margin / fixed costs move outside the approved scenario range.</div></div>`;
-}
+const $=id=>document.getElementById(id);let current=null;
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function showTab(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));scrollTo({top:0,behavior:'smooth'})}
+function num(id){let v=parseFloat($(id).value);return Number.isFinite(v)?v:0}function str(id){return $(id).value.trim()}function chk(id){return $(id).checked}
+function money(v,c){return Number.isFinite(v)?new Intl.NumberFormat('en',{style:'currency',currency:c,maximumFractionDigits:0}).format(v):'—'}function pct(v){return Number.isFinite(v)?v.toFixed(1)+'%':'—'}function months(v){return v==null||!Number.isFinite(v)?'No payback':v.toFixed(1)+' mo'}
+function toggleOpex(){let t=$('opexMode').value==='total';$('totalMode').style.display=t?'block':'none';$('payrollMode').style.display=t?'none':'grid'}
+function input(){return{currency:$('currency').value,country:str('country'),city:str('city'),siteName:str('siteName'),storeFormat:str('storeFormat'),sellingArea:num('sellingArea'),leaseTermYears:num('leaseTermYears'),capex:num('capex'),deposit:num('deposit'),monthlyRent:num('monthlyRent'),serviceCharge:num('serviceCharge'),turnoverRentPct:num('turnoverRentPct'),projectedMonthlySales:num('projectedMonthlySales'),grossMarginPct:num('grossMarginPct'),opexMode:$('opexMode').value,payroll:num('payroll'),utilities:num('utilities'),maintenance:num('maintenance'),otherStoreOpex:num('otherStoreOpex'),totalMonthlyStoreOpex:num('totalMonthlyStoreOpex'),catchmentPopulation:num('catchmentPopulation'),footfall:num('footfall'),rampUpMonths:num('rampUpMonths'),competitors:str('competitors'),notes:str('notes'),evidence:{sales:chk('salesComparableEvidence'),rent:chk('rentDocumented'),capex:chk('capexQuoted'),margin:chk('marginEvidence'),footfall:chk('footfallMeasured'),catchment:chk('catchmentStudy')}}}
+function opex(i,p=0){let x=i.opexMode==='total'?i.totalMonthlyStoreOpex:i.payroll+i.utilities+i.maintenance+i.otherStoreOpex;return x*(1+p/100)}
+function compute(i,a={salesPct:0,gmPoints:0,opexPct:0},mods={}){let sales=i.projectedMonthlySales*(1+a.salesPct/100),gm=i.grossMarginPct+a.gmPoints,rent=mods.rent??i.monthlyRent,service=mods.service??i.serviceCharge,capex=mods.capex??i.capex,tr=sales*i.turnoverRentPct/100,op=opex(i,a.opexPct),fixed=rent+service+op,gp=sales*gm/100,ebitda=gp-fixed-tr,margin=sales?ebitda/sales*100:0,inv=capex+i.deposit,pay=ebitda>0?inv/ebitda:null,occ=sales?(rent+service+tr)/sales*100:0,cm=gm-i.turnoverRentPct,be=cm>0?fixed/(cm/100):null;return{sales,gm,ebitda,margin,inv,pay,occ,cm,be,fixed}}
+function confidence(i){let checks=[i.evidence.sales,i.evidence.rent,i.evidence.capex,i.evidence.margin,i.evidence.footfall||!!i.footfall,i.evidence.catchment||!!i.catchmentPopulation,!!i.competitors,!!i.leaseTermYears,!!i.rampUpMonths],coverage=Math.round(checks.filter(Boolean).length/checks.length*100);return{coverage,level:coverage>=75?'High':coverage>=45?'Medium':'Low'}}
+function sens(i){let b=compute(i),r=[],add=(d,m,v)=>r.push({d,m,ed:v.ebitda-b.ebitda,pd:b.pay!=null&&v.pay!=null?v.pay-b.pay:null});add('Projected sales','-10%',compute(i,{salesPct:-10,gmPoints:0,opexPct:0}));add('Gross margin','-10% relative',compute(i,{salesPct:0,gmPoints:-i.grossMarginPct*.1,opexPct:0}));add('Rent & occupancy','+10%',compute(i,{}, {rent:i.monthlyRent*1.1,service:i.serviceCharge*1.1}));add('Capex','+10%',compute(i,{}, {capex:i.capex*1.1}));add('Store opex','+10%',compute(i,{salesPct:0,gmPoints:0,opexPct:10}));return r.sort((a,b)=>Math.abs(b.ed)-Math.abs(a.ed))}
+function targetSalesMargin(b,t){return b.cm<=t?null:b.fixed/((b.cm-t)/100)}function targetSalesPayback(b,m){return m<=0||b.cm<=0?null:(b.fixed+b.inv/m)/(b.cm/100)}
+function econ(b,tm,tp){if(b.ebitda<=0||b.pay==null)return{key:'unviable',label:'Base case unviable',cls:'risk'};if(b.margin<tm||b.pay>tp)return{key:'below',label:'Below guardrails',cls:'warn'};return{key:'meets',label:'Meets guardrails',cls:'ok'}}
+function gap(req,cur){return req&&cur?((req/cur)-1)*100:null}
+function runReview(){current=input();let i=current,miss=[];[['Country',i.country],['City',i.city],['Site name',i.siteName],['Store format',i.storeFormat],['Selling area',i.sellingArea],['Capex',i.capex],['Monthly rent',i.monthlyRent],['Sales',i.projectedMonthlySales],['Gross margin',i.grossMarginPct]].forEach(x=>{if(!x[1])miss.push(x[0])});if(i.opexMode==='payroll'){if(!i.payroll)miss.push('Payroll');if(!i.otherStoreOpex)miss.push('Other store opex')}else if(!i.totalMonthlyStoreOpex)miss.push('Total monthly store opex');if(miss.length){$('validation').style.display='block';$('validation').textContent='Complete required fields: '+miss.join(', ');showTab('review');return}$('validation').style.display='none';renderAll();showTab('review')}
+function renderAll(){if(!current)return;let i=current,b=compute(i),c=confidence(i),tm=num('targetMargin'),tp=num('targetPayback'),e=econ(b,tm,tp),sm=targetSalesMargin(b,tm),sp=targetSalesPayback(b,tp);$('caseTitle').textContent=[i.siteName,i.city,i.country].join(' · ');$('mSales').textContent=money(b.sales,i.currency);$('mEbitda').textContent=money(b.ebitda,i.currency);$('mMargin').textContent=pct(b.margin);$('mInvestment').textContent=money(b.inv,i.currency);$('mPayback').textContent=months(b.pay);$('mBreakeven').textContent=b.be?money(b.be,i.currency):'Not achievable';$('mOccupancy').textContent=pct(b.occ);$('mConfidence').textContent=c.level;$('mCoverage').textContent=' '+c.coverage+'% evidence coverage';$('mEconomic').innerHTML='<span class="'+e.cls+'">'+e.label+'</span>';refreshScenarios();renderSensitivity();renderFlags();renderDD();
+$('conditionsList').innerHTML=`<div class="condition"><strong>Break-even</strong><div>Monthly sales must be at least <b>${b.be?money(b.be,i.currency):'not mathematically achievable'}</b>.</div></div><div class="condition"><strong>${tm}% EBITDA margin</strong><div>${sm?`Requires approximately <b>${money(sm,i.currency)}</b> monthly sales.`:'Not achievable with current contribution margin.'}</div></div><div class="condition"><strong>${tp}-month payback</strong><div>${sp?`Requires approximately <b>${money(sp,i.currency)}</b> monthly sales.`:'Not achievable under current assumptions.'}</div></div><div class="condition"><strong>Evidence confidence</strong><div><b>${c.level}</b> (${c.coverage}%). Evidence completeness, not investment quality or probability of success.</div></div>`;
+let gm=gap(sm,b.sales),gp=gap(sp,b.sales),bind=Math.max(sm||0,sp||0);$('targetGaps').innerHTML=`<div class="gapitem"><small>Current monthly sales</small><b>${money(b.sales,i.currency)}</b></div><div class="gapitem"><small>For ${tm}% margin</small><b>${sm?money(sm,i.currency):'Not achievable'}</b><span>${gm==null?'':(gm>0?'+':'')+gm.toFixed(1)+'% vs current'}</span></div><div class="gapitem"><small>For ${tp}-mo payback</small><b>${sp?money(sp,i.currency):'Not achievable'}</b><span>${gp==null?'':(gp>0?'+':'')+gp.toFixed(1)+'% vs current'}</span></div>`;
+let top=sens(i)[0]?.d||'key economics',dd=[];if(!i.evidence.capex)dd.push('capex quotations');if(!i.evidence.sales)dd.push('comparable-store sales evidence');if(!i.evidence.margin)dd.push('margin evidence');if(!i.evidence.rent)dd.push('documented lease economics');
+let lead=e.key==='meets'?`Current base economics meet the ${tm}% EBITDA margin and ${tp}-month payback guardrails, subject to evidence quality and downside resilience.`:e.key==='below'?`Current base economics miss management guardrails. Base margin is <b>${pct(b.margin)}</b> and payback is <b>${months(b.pay)}</b>. The binding sales threshold is approximately <b>${money(bind,i.currency)}</b>. Management should test what credible evidence supports this level, or what economics can be renegotiated.`:`Current base case does not produce positive store EBITDA and therefore has no payback. Economics must change through sales, margin, occupancy, capex or operating cost before the case can satisfy the current guardrails.`;
+$('decisionConditions').innerHTML=`<div class="condition"><strong>Economic position</strong><div>${lead}</div></div><div class="condition"><strong>Renegotiate</strong><div>Prioritise terms that improve the highest-sensitivity driver: <b>${top}</b>.</div></div><div class="condition"><strong>Further DD</strong><div>${dd.length?dd.join('; '):'No major core evidence gaps recorded.'}</div></div><div class="condition"><strong>Reassess if</strong><div>Expected sales fall below <b>${b.be?money(b.be,i.currency):'breakeven'}</b>, or margin/fixed costs move outside the approved scenario range.</div></div>`}
+function adj(p){return{salesPct:num(p+'Sales'),gmPoints:num(p+'Gm'),opexPct:num(p+'Opex')}}function refreshScenarios(){if(!current)return;let i=current,v=[compute(i,adj('down')),compute(i),compute(i,adj('up'))],rows=[['Sales',x=>money(x.sales,i.currency)],['GM',x=>pct(x.gm)],['EBITDA',x=>money(x.ebitda,i.currency)],['EBITDA margin',x=>pct(x.margin)],['Payback',x=>months(x.pay)]];$('scenarioTable').innerHTML=rows.map(r=>`<tr><th>${r[0]}</th>${v.map(x=>`<td>${r[1](x)}</td>`).join('')}</tr>`).join('')}
+function renderSensitivity(){let i=current;$('sensitivityTable').innerHTML=sens(i).map((r,k)=>`<tr><td>${k+1}</td><td><b>${r.d}</b></td><td>${r.m}</td><td>${money(r.ed,i.currency)}</td><td>${r.pd==null?'—':(r.pd>=0?'+':'')+r.pd.toFixed(1)+' mo'}</td></tr>`).join('')}
+function renderFlags(){let i=current,b=compute(i),F=[['Projected monthly sales',i.evidence.sales?'Comparable-store evidence confirmed.':'No comparable-store evidence recorded.',i.evidence.sales?'Supported':'High sensitivity'],['Gross margin',i.evidence.margin?'Margin evidence confirmed.':'Category/mix evidence not recorded.',i.evidence.margin?'Supported':'Needs validation'],['Rent and occupancy',`Occupancy cost is ${b.occ.toFixed(1)}% of projected sales.`,i.evidence.rent?'Supported':'Needs validation'],['Capex and initial investment',i.evidence.capex?'Quotation evidence confirmed.':'Capex is not supported by quotations.',i.evidence.capex?'Supported':'Needs validation']];if(i.leaseTermYears&&b.pay!=null&&b.pay>i.leaseTermYears*12)F.push(['Payback vs lease term','Simple payback exceeds the entered lease term.','Inconsistent']);if(i.sellingArea)F.push(['Sales density',`Implied ${(i.projectedMonthlySales/i.sellingArea).toFixed(0)} ${i.currency} per m² per month. Benchmark against the retailer's own network.`,'Needs validation']);$('flags').innerHTML=F.map(f=>`<div class="dd"><span class="badge ${f[2]==='Supported'?'ok':f[2]==='Inconsistent'?'risk':'warn'}">${f[2]}</span><h4>${f[0]}</h4><div class="muted">${f[1]}</div></div>`).join('')}
+function renderDD(){let i=current,T=[];if(!i.evidence.sales)T.push(['Build sales projection from comparable stores or documented catchment model.','Critical before commitment']);if(!i.evidence.rent)T.push(['Obtain draft lease and full occupancy economics.','Critical before commitment']);if(!i.evidence.capex)T.push(['Obtain firm capex quotations and contingency allowance.','Critical before commitment']);if(!i.evidence.margin)T.push(['Validate gross margin against planned category mix and landed cost.','Critical before commitment']);if(!i.rampUpMonths)T.push(['Agree a ramp-up curve.','Validate before opening']);T.push(['Compare actual sales against base case at F90 and F180 and rerun analysis.','Monitor after opening']);$('ddTasks').innerHTML=T.map(x=>`<div class="dd"><span class="badge ${x[1][0]==='C'?'risk':x[1][0]==='V'?'warn':'ok'}">${x[1]}</span><div style="margin-top:7px">${x[0]}</div></div>`).join('')}
 function clearCase(){document.querySelectorAll('input,textarea').forEach(x=>{if(x.type==='checkbox')x.checked=false;else if(!['downSales','downGm','downOpex','upSales','upGm','upOpex','targetMargin','targetPayback'].includes(x.id))x.value=''});$('currency').value='MYR';$('opexMode').value='payroll';toggleOpex();current=null;showTab('input')}
-function setv(id,v){$(id).value=v}
-function loadDemo(){
- clearCase(); const d={currency:'MYR',country:'Sample Country',city:'Sample City',siteName:'DEMO — Northgate Mall L2-14 (synthetic)',storeFormat:'Mid-box neighbourhood format',sellingArea:850,capex:420000,deposit:52000,monthlyRent:26000,serviceCharge:4500,turnoverRentPct:1.5,projectedMonthlySales:190000,grossMarginPct:44,payroll:19000,utilities:4500,maintenance:2200,otherStoreOpex:6500,leaseTermYears:5,rampUpMonths:6,rampUpStartPct:65,catchmentPopulation:78000,footfall:24000,competitors:'Two general-merchandise competitors within 3 km',siteInformation:'Synthetic suburban mall with supermarket anchor.',notes:'Fictional demonstration case only.'};
- Object.entries(d).forEach(([k,v])=>setv(k,v)); $('salesComparableEvidence').checked=true;$('rentDocumented').checked=true;$('capexQuoted').checked=false;$('marginEvidence').checked=true;$('footfallMeasured').checked=true;$('catchmentStudy').checked=false; runReview();
-}
+function setv(id,v){$(id).value=v}function loadDemo(){clearCase();let d={country:'Sample Country',city:'Sample City',siteName:'DEMO — Northgate Mall L2-14 (synthetic)',storeFormat:'Mid-box neighbourhood format',sellingArea:850,capex:420000,deposit:52000,monthlyRent:26000,serviceCharge:4500,turnoverRentPct:1.5,projectedMonthlySales:190000,grossMarginPct:44,payroll:19000,utilities:4500,maintenance:2200,otherStoreOpex:6500,leaseTermYears:5,rampUpMonths:6,catchmentPopulation:78000,footfall:24000,competitors:'Two general-merchandise competitors within 3 km',notes:'Fictional demonstration case only.'};Object.entries(d).forEach(([k,v])=>setv(k,v));$('salesComparableEvidence').checked=true;$('rentDocumented').checked=true;$('marginEvidence').checked=true;$('footfallMeasured').checked=true;runReview()}
 toggleOpex();
 </script>
 </body>
