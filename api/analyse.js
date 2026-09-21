@@ -17,13 +17,15 @@ export default function handler(req,res){
   const i=req.body?.input||{},tm=n(req.body?.targetMargin)||10,tp=n(req.body?.targetPayback)||24,base=calc(i);
   const downside=calc(i,{salesPct:-10,gmPoints:-n(i.grossMarginPct)*.10,opexPct:10}),upside=calc(i,{salesPct:10,gmPoints:n(i.grossMarginPct)*.05});
   const ev=evidence(i),ms=tMargin(base,tm),ps=tPay(base,tp),required=Math.max(ms||0,ps||0),gap=base.sales&&required?(required/base.sales-1)*100:null;
-  const status=(base.ebitda<=0||base.payback===null||downside.ebitda<=0)?'RED':(base.margin>=tm&&base.payback<=tp&&ev.coverage>=80?'GREEN':'AMBER');
+  const baseStatus=(base.ebitda<=0||base.payback===null)?'RED':(base.margin>=tm&&base.payback<=tp?'GREEN':'AMBER');
+  const downsideRisk=downside.ebitda<=0?'RED':'AMBER';
+  const status=(baseStatus==='RED'||ev.coverage<60)?'RED':(baseStatus==='GREEN'&&downsideRisk!=='RED'&&ev.coverage>=80?'GREEN':'AMBER');
   let action,reason;
   if(status==='GREEN'){action='PROCEED TO NEXT DECISION STAGE';reason='Core economics meet the selected working targets and evidence coverage is strong. Validate final downside assumptions before commitment.'}
-  else if(status==='RED'){action='DO NOT COMMIT YET';reason='The case has a material economic or downside weakness. Rework the economics before capital commitment.'}
+  else if(status==='RED'){action='DO NOT COMMIT YET';reason='Base economics or critical evidence materially fail the current decision thresholds. Rework the case before commitment.'}
   else if(ev.coverage<60){action='HOLD / GATHER EVIDENCE';reason='The result is dominated by evidence gaps. Validate the key assumptions before relying on the economics.'}
-  else{action='PROCEED TO DD';reason='The case is close enough to continue diligence. Validate the binding assumptions or improve rent, margin, capex or opex.'}
+  else{action='PROCEED TO DD / REWORK TERMS';reason='Base economics are close to target, but downside resilience is weak. Validate the binding assumptions and improve controllable economics before commitment.'}
   const interp=base.payback===null?'No payback':B.find(x=>base.payback<=x.m).l;
-  return res.status(200).json({ok:true,engine:'LEOXIS_EXPANSION_VNEXT_STAGE1',status,base,downside,upside,evidence:ev,targets:{targetMargin:tm,targetPayback:tp,marginSales:ms,paybackSales:ps,requiredSales:required,salesGapPct:gap},benchmark:{payback:{type:'LEOXIS working reference',interpretation:interp,bands:['≤18m Strong','18–24m Healthy','24–36m Requires justification','>36m High concern']}},recommendation:{action,reason},disclaimer:'Working references are decision-support heuristics, not universal retail industry standards.'});
+  return res.status(200).json({ok:true,engine:'LEOXIS_EXPANSION_VNEXT_STAGE11',status,baseStatus,downsideRisk,base,downside,upside,evidence:ev,targets:{targetMargin:tm,targetPayback:tp,marginSales:ms,paybackSales:ps,requiredSales:required,salesGapPct:gap},benchmark:{payback:{type:'LEOXIS working reference',interpretation:interp,bands:['≤18m Strong','18–24m Healthy','24–36m Requires justification','>36m High concern']}},recommendation:{action,reason},disclaimer:'Working references are decision-support heuristics, not universal retail industry standards.'});
  }catch(e){return res.status(400).json({ok:false,error:'Unable to analyse case'})}
 }
