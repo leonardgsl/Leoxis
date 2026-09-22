@@ -1,0 +1,291 @@
+{
+  "schema": "LEOXIS_MAJOR_RETAILER_DB_V1",
+  "country": "Malaysia",
+  "rule": "Retail chain must have >30 physical stores in Malaysia. OSM is used only to detect local presence; national scale comes from this verified registry.",
+  "exclusions": [
+    "F&B-only chains",
+    "single-location retailers",
+    "chains with <=30 Malaysian stores",
+    "unverified chains"
+  ],
+  "source_tiers": {
+    "A": "Official company / filing / first-party source",
+    "A/B": "Company statement reported by national wire",
+    "B": "Industry/credible secondary source"
+  },
+  "retailers": [
+    {
+      "key": "99-speedmart",
+      "name": "99 Speedmart",
+      "aliases": [
+        "99 speedmart",
+        "99speedmart",
+        "99 speed mart"
+      ],
+      "category": "Convenience / minimart",
+      "store_count": 3151,
+      "count_basis": "as_of",
+      "as_of": "2026-06-30",
+      "source_tier": "A",
+      "source": "Bernama citing company Bursa filing"
+    },
+    {
+      "key": "7-eleven",
+      "name": "7-Eleven",
+      "aliases": [
+        "7-eleven",
+        "7 eleven",
+        "7eleven"
+      ],
+      "category": "Convenience",
+      "store_count": 2700,
+      "count_basis": "more_than",
+      "as_of": "2026-09",
+      "source_tier": "A",
+      "source": "7-Eleven Malaysia official website"
+    },
+    {
+      "key": "kk-super-mart",
+      "name": "KK Super Mart",
+      "aliases": [
+        "kk super mart",
+        "kk mart",
+        "kk supermart"
+      ],
+      "category": "Convenience / minimart",
+      "store_count": 900,
+      "count_basis": "approx",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "Malaysia Retailers Association / MIRF industry summary"
+    },
+    {
+      "key": "familymart",
+      "name": "FamilyMart",
+      "aliases": [
+        "familymart",
+        "family mart"
+      ],
+      "category": "Convenience",
+      "store_count": 430,
+      "count_basis": "approx",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "Malaysia Retailers Association / MIRF industry summary"
+    },
+    {
+      "key": "mynews",
+      "name": "myNEWS",
+      "aliases": [
+        "mynews",
+        "my news"
+      ],
+      "category": "Convenience",
+      "store_count": 550,
+      "count_basis": "approx_group_network",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "Malaysia Retailers Association / MIRF industry summary; includes related banners"
+    },
+    {
+      "key": "mr-diy",
+      "name": "MR.DIY",
+      "aliases": [
+        "mr diy",
+        "mr.diy",
+        "mrdiy",
+        "mr d.i.y."
+      ],
+      "category": "Home improvement / variety",
+      "store_count": 1500,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "MR.DIY Malaysia official website"
+    },
+    {
+      "key": "eco-shop",
+      "name": "Eco-Shop",
+      "aliases": [
+        "eco shop",
+        "eco-shop",
+        "ecoshop"
+      ],
+      "category": "Value / variety",
+      "store_count": 371,
+      "count_basis": "group_total",
+      "as_of": "2025-05-31",
+      "source_tier": "A",
+      "source": "Eco-Shop Marketing Berhad Annual Report 2025; Eco-Shop + Eco-Plus"
+    },
+    {
+      "key": "watsons",
+      "name": "Watsons",
+      "aliases": [
+        "watsons",
+        "watson"
+      ],
+      "category": "Health & beauty",
+      "store_count": 800,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Watsons Malaysia official website"
+    },
+    {
+      "key": "guardian",
+      "name": "Guardian",
+      "aliases": [
+        "guardian"
+      ],
+      "category": "Health & beauty",
+      "store_count": 550,
+      "count_basis": "more_than",
+      "as_of": "2025",
+      "source_tier": "A/B",
+      "source": "Bernama citing Guardian Malaysia"
+    },
+    {
+      "key": "alpro",
+      "name": "Alpro Pharmacy",
+      "aliases": [
+        "alpro",
+        "alpro pharmacy"
+      ],
+      "category": "Pharmacy",
+      "store_count": 300,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Alpro Pharmacy official website"
+    },
+    {
+      "key": "health-lane",
+      "name": "Health Lane Family Pharmacy",
+      "aliases": [
+        "health lane",
+        "health lane family pharmacy"
+      ],
+      "category": "Pharmacy",
+      "store_count": 250,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Health Lane official website"
+    },
+    {
+      "key": "caring",
+      "name": "CARiNG Pharmacy",
+      "aliases": [
+        "caring pharmacy",
+        "caring"
+      ],
+      "category": "Pharmacy",
+      "store_count": 100,
+      "count_basis": "minimum_placeholder",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "MIRF industry summary describes network as hundreds; conservative machine threshold only"
+    },
+    {
+      "key": "aeon",
+      "name": "AEON",
+      "aliases": [
+        "aeon"
+      ],
+      "category": "Department store / supermarket",
+      "store_count": 30,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "AEON Malaysia official website"
+    },
+    {
+      "key": "lotuss",
+      "name": "Lotus's",
+      "aliases": [
+        "lotus's",
+        "lotuss",
+        "lotus"
+      ],
+      "category": "Hypermarket / supermarket",
+      "store_count": 71,
+      "count_basis": "as_of",
+      "as_of": "2026-04-04",
+      "source_tier": "A",
+      "source": "Lotus's Malaysia official press release"
+    },
+    {
+      "key": "econsave",
+      "name": "Econsave",
+      "aliases": [
+        "econsave",
+        "econ2"
+      ],
+      "category": "Supermarket",
+      "store_count": 90,
+      "count_basis": "approx",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "MIRF industry summary"
+    },
+    {
+      "key": "mydin",
+      "name": "MYDIN",
+      "aliases": [
+        "mydin"
+      ],
+      "category": "Hypermarket / supermarket",
+      "store_count": 70,
+      "count_basis": "approx",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "MIRF industry summary"
+    },
+    {
+      "key": "padini",
+      "name": "Padini",
+      "aliases": [
+        "padini",
+        "padini concept store",
+        "brands outlet"
+      ],
+      "category": "Fashion",
+      "store_count": 160,
+      "count_basis": "own_stores",
+      "as_of": "2025-06-30",
+      "source_tier": "A",
+      "source": "Padini corporate website"
+    },
+    {
+      "key": "popular",
+      "name": "POPULAR",
+      "aliases": [
+        "popular",
+        "popular bookstore",
+        "popular book"
+      ],
+      "category": "Books / stationery",
+      "store_count": 93,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "B",
+      "source": "AEON Mall tenant profile citing POPULAR company profile"
+    },
+    {
+      "key": "senheng",
+      "name": "Senheng",
+      "aliases": [
+        "senheng",
+        "senq",
+        "sen q"
+      ],
+      "category": "Consumer electronics",
+      "store_count": 100,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Senheng official website"
+    }
+  ]
+}
