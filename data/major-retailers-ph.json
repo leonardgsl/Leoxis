@@ -1,17 +1,183 @@
 {
-  "schema":"LEOXIS_MAJOR_RETAILER_PH_DB_V1",
-  "country":"Philippines",
-  "rule":"Retail chain must have >30 physical stores in the Philippines; only chains with sufficiently credible current scale evidence are included.",
-  "retailers":[
-    {"key":"7-eleven","name":"7-Eleven","aliases":["7-eleven","7 eleven","7eleven"],"category":"Convenience","store_count":4000,"count_basis":"at_least","as_of":"2024","source_tier":"A","source":"7-Eleven Philippines official About page"},
-    {"key":"alfamart","name":"Alfamart","aliases":["alfamart","alfa mart"],"category":"Minimart / grocery","store_count":2000,"count_basis":"at_least","as_of":"2024-06","source_tier":"A","source":"Alfamart Philippines official website"},
-    {"key":"mr-diy","name":"MR.DIY","aliases":["mr diy","mr.diy","mrdiy","mr d.i.y."],"category":"Home improvement / variety","store_count":1000,"count_basis":"more_than","as_of":"2026","source_tier":"A","source":"MR.DIY Philippines official website"},
-    {"key":"mercury-drug","name":"Mercury Drug","aliases":["mercury drug","mercury drugstore"],"category":"Pharmacy / health","store_count":1200,"count_basis":"more_than","as_of":"2026","source_tier":"A","source":"Mercury Drug official corporate information"},
-    {"key":"watsons","name":"Watsons","aliases":["watsons","watson"],"category":"Health & beauty / pharmacy","store_count":1229,"count_basis":"as_of","as_of":"2025-12","source_tier":"B","source":"Watsons Philippines company profile"},
-    {"key":"puregold","name":"Puregold","aliases":["puregold","puregold price club","puremart"],"category":"Supermarket / hypermarket","store_count":662,"count_basis":"group_banner_total","as_of":"2025-Q1","source_tier":"A","source":"Puregold 1Q 2025 investor presentation"},
-    {"key":"osave","name":"O!Save","aliases":["o!save","osave","o save"],"category":"Hard discount grocery","store_count":500,"count_basis":"at_least","as_of":"2025-05-23","source_tier":"A","source":"Robinsons Retail official release"},
-    {"key":"uncle-johns","name":"Uncle John's","aliases":["uncle john's","uncle johns","uncle john"],"category":"Convenience","store_count":415,"count_basis":"as_of_current_site","as_of":"2026","source_tier":"A","source":"Robinsons Retail official business-unit page"},
-    {"key":"robinsons-supermarket","name":"Robinsons Supermarket","aliases":["robinsons supermarket"],"category":"Supermarket","store_count":149,"count_basis":"at_least","as_of":"2026","source_tier":"A","source":"Robinsons Supermarket official store locator"},
-    {"key":"daiso","name":"Daiso","aliases":["daiso","daiso japan"],"category":"Variety","store_count":87,"count_basis":"as_of","as_of":"2026-02","source_tier":"A","source":"Daiso corporate global store network"}
-  ]
+  "schema": "LEOXIS_MAJOR_RETAILER_PH_DB_V1_1",
+  "country": "Philippines",
+  "rule": "Retail chain must have >30 physical stores in the Philippines; only chains with sufficiently credible current scale evidence are included.",
+  "retailers": [
+    {
+      "key": "7-eleven",
+      "name": "7-Eleven",
+      "aliases": [
+        "7-eleven",
+        "7 eleven",
+        "7eleven"
+      ],
+      "category": "Convenience",
+      "store_count": 4000,
+      "count_basis": "at_least",
+      "as_of": "2024",
+      "source_tier": "A",
+      "source": "7-Eleven Philippines official About page"
+    },
+    {
+      "key": "alfamart",
+      "name": "Alfamart",
+      "aliases": [
+        "alfamart",
+        "alfa mart"
+      ],
+      "category": "Minimart / grocery",
+      "store_count": 2000,
+      "count_basis": "at_least",
+      "as_of": "2024-06",
+      "source_tier": "A",
+      "source": "Alfamart Philippines official website"
+    },
+    {
+      "key": "mr-diy",
+      "name": "MR.DIY",
+      "aliases": [
+        "mr diy",
+        "mr.diy",
+        "mrdiy",
+        "mr d.i.y."
+      ],
+      "category": "Home improvement / variety",
+      "store_count": 1000,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "MR.DIY Philippines official website"
+    },
+    {
+      "key": "mercury-drug",
+      "name": "Mercury Drug",
+      "aliases": [
+        "mercury drug",
+        "mercury drugstore"
+      ],
+      "category": "Pharmacy / health",
+      "store_count": 1200,
+      "count_basis": "more_than",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Mercury Drug official corporate information"
+    },
+    {
+      "key": "watsons",
+      "name": "Watsons",
+      "aliases": [
+        "watsons",
+        "watson"
+      ],
+      "category": "Health & beauty / pharmacy",
+      "store_count": 1229,
+      "count_basis": "as_of",
+      "as_of": "2025-12",
+      "source_tier": "B",
+      "source": "Watsons Philippines company profile"
+    },
+    {
+      "key": "puregold",
+      "name": "Puregold",
+      "aliases": [
+        "puregold",
+        "puregold price club",
+        "puremart"
+      ],
+      "category": "Supermarket / hypermarket",
+      "store_count": 662,
+      "count_basis": "group_banner_total",
+      "as_of": "2025-Q1",
+      "source_tier": "A",
+      "source": "Puregold 1Q 2025 investor presentation"
+    },
+    {
+      "key": "osave",
+      "name": "O!Save",
+      "aliases": [
+        "o!save",
+        "osave",
+        "o save"
+      ],
+      "category": "Hard discount grocery",
+      "store_count": 500,
+      "count_basis": "at_least",
+      "as_of": "2025-05-23",
+      "source_tier": "A",
+      "source": "Robinsons Retail official release"
+    },
+    {
+      "key": "uncle-johns",
+      "name": "Uncle John's",
+      "aliases": [
+        "uncle john's",
+        "uncle johns",
+        "uncle john"
+      ],
+      "category": "Convenience",
+      "store_count": 415,
+      "count_basis": "as_of_current_site",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Robinsons Retail official business-unit page"
+    },
+    {
+      "key": "robinsons-supermarket",
+      "name": "Robinsons Supermarket",
+      "aliases": [
+        "robinsons supermarket"
+      ],
+      "category": "Supermarket",
+      "store_count": 149,
+      "count_basis": "at_least",
+      "as_of": "2026",
+      "source_tier": "A",
+      "source": "Robinsons Supermarket official store locator"
+    },
+    {
+      "key": "daiso",
+      "name": "Daiso",
+      "aliases": [
+        "daiso",
+        "daiso japan"
+      ],
+      "category": "Variety",
+      "store_count": 87,
+      "count_basis": "as_of",
+      "as_of": "2026-02",
+      "source_tier": "A",
+      "source": "Daiso corporate global store network"
+    },
+    {
+      "key": "national-book-store",
+      "name": "National Book Store",
+      "aliases": [
+        "national book store",
+        "national bookstore",
+        "nbs express"
+      ],
+      "category": "Books / stationery",
+      "store_count": 262,
+      "count_basis": "as_of_current_site",
+      "as_of": "2026-09",
+      "source_tier": "A",
+      "source": "National Book Store official About Us"
+    },
+    {
+      "key": "wilcon",
+      "name": "Wilcon Depot",
+      "aliases": [
+        "wilcon depot",
+        "wilcon home essentials",
+        "do it wilcon"
+      ],
+      "category": "Home improvement / construction",
+      "store_count": 109,
+      "count_basis": "as_of",
+      "as_of": "2026-01",
+      "source_tier": "A",
+      "source": "Wilcon official About Us"
+    }
+  ],
+  "mall_context_note": "Mall classification and tenant mix are separate evidence dimensions; mall tenants are not automatically treated as >30-store major retailers."
 }
