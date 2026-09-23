@@ -11,7 +11,7 @@ const MAJOR_RETAILERS_PH={"schema":"LEOXIS_MAJOR_RETAILER_PH_DB_V1","country":"P
 const norm=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const rad=(a,b,c,d)=>{const R=6371e3,p1=a*Math.PI/180,p2=c*Math.PI/180,dp=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))};
 function majorRetailersForCountry(items,country,lat,lng){
- const c=norm(country);const reg=(c==='malaysia'||c==='my')?MAJOR_RETAILERS_MY.retailers:(c==='philippines'||c==='philippine'||c==='ph'||c.includes('philippines'))?MAJOR_RETAILERS_PH.retailers:[];
+ const c=norm(country);const reg=(c==='malaysia'||c==='my')?MAJOR_RETAILERS_MY.retailers:(c==='philippines'||c==='philippine'||c==='ph'||c.includes('philippines')||c.includes('pilipinas'))?MAJOR_RETAILERS_PH.retailers:[];
  const found=[];
  for(const x of items){const name=x.tags?.name;if(!name)continue;const n=norm(name);const hit=reg.find(r=>r.aliases.some(a=>n.includes(norm(a))));if(hit&&!found.some(f=>f.key===hit.key))(()=>{const la=Number(x.lat??x.center?.lat),lo=Number(x.lon??x.center?.lon);if(Number.isFinite(la)&&Number.isFinite(lo)){const distanceM=Math.round(rad(lat,lng,la,lo));if(distanceM<=5000)found.push({key:hit.key,name:hit.name,verifiedStores:hit.store_count,countBasis:hit.count_basis,category:hit.category,sourceTier:hit.source_tier,distanceM})}})()}
  return found;
@@ -35,7 +35,7 @@ async function fsqBrandSearch(brand,lat,lng){
  return (j.results||[]).map(x=>{const n=norm(x.name),ok=brand.aliases.some(a=>n.includes(norm(a))||norm(a).includes(n)),la=Number(x.latitude),lo=Number(x.longitude);if(!ok||!Number.isFinite(la)||!Number.isFinite(lo))return null;const distanceM=Math.round(rad(lat,lng,la,lo));if(distanceM>5000)return null;return{fsqPlaceId:x.fsq_place_id,key:brand.key,name:brand.name,locationName:x.name,verifiedStores:brand.store_count,countBasis:brand.count_basis,category:brand.category,sourceTier:brand.source_tier,distanceM,address:x.location?.formatted_address||x.location?.address||''}}).filter(Boolean);
 }
 async function foursquareMajorRetailers(lat,lng,country){
- const c=norm(country),isMalaysia=c==='malaysia'||c==='my'||c.includes('malaysia'),isPhilippines=c==='philippines'||c==='philippine'||c==='ph'||c.includes('philippines');
+ const c=norm(country),isMalaysia=c==='malaysia'||c==='my'||c.includes('malaysia'),isPhilippines=c==='philippines'||c==='philippine'||c==='ph'||c.includes('philippines')||c.includes('pilipinas');
  const registry=isMalaysia?MAJOR_RETAILERS_MY:isPhilippines?MAJOR_RETAILERS_PH:null;
  if(!registry)return{major:[],queries:0,successfulQueries:0,failedQueries:0,status:'unsupported-country',errors:[`Major-retailer registry not configured for country: ${country||'blank'}`]};
  const settled=await Promise.allSettled(registry.retailers.map(r=>fsqBrandSearch(r,lat,lng))),good=settled.filter(x=>x.status==='fulfilled'),bad=settled.filter(x=>x.status==='rejected');
@@ -67,6 +67,7 @@ async function siteContext(lat,lng,country){
  const [fsq,osm]=await Promise.all([foursquareMajorRetailers(lat,lng,country),osmContext(lat,lng)]),major=fsq.major;
  return{...osm,majorRetailers1km:major.filter(x=>x.distanceM<=1000),majorRetailers2km:major.filter(x=>x.distanceM<=2000),majorRetailers5km:major,majorRetailers:major,retailerProvider:'Foursquare Places',retailerStatus:fsq.status,retailerQueries:fsq.queries,successfulRetailerQueries:fsq.successfulQueries||0,failedRetailerQueries:fsq.failedQueries||0,retailerErrors:fsq.errors||[],majorRetailerRule:'National registry >30 stores; nearby outlet presence from Foursquare Places.'};
 }
+/* LEOXIS_GIS_PH_SERVER_COUNTRY_FALLBACK_V262 */
 export default async function handler(req,res){if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});try{
 /* LEOXIS_FREE_LOCATION_SEARCH_V21 */
 if(req.body?.action==='search'){const q=String(req.body?.query||'').trim();if(q.length<3)return res.status(400).json({ok:false,error:'Enter at least 3 characters.'});const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',q);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','5');u.searchParams.set('addressdetails','1');const r=await fetch(u,{headers:{'User-Agent':APP_UA,'Accept-Language':'en'}});if(!r.ok)throw new Error('Location search unavailable');const j=await r.json();return res.status(200).json({ok:true,engine:'LEOXIS_FREE_LOCATION_SEARCH_V21',results:j.map(x=>({label:x.display_name,lat:Number(x.lat),lng:Number(x.lon),type:x.type||x.category||'place'}))})}
