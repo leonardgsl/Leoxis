@@ -43,6 +43,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 .challenge-q{padding:12px 0;border-bottom:1px solid var(--line)}.challenge-q:last-child{border-bottom:0}
 .challenge-q b{display:block;margin-bottom:4px}.challenge-tag{font-size:9px;font-weight:800;text-transform:uppercase;color:var(--accent)}
 @media(max-width:700px){.challenge-table{display:block;overflow-x:auto;white-space:nowrap}.challenge-table td:last-child{white-space:normal;min-width:190px}}
+/* LEOXIS_STAGE31_EVIDENCE_RISK_MOBILE_V1 */
+.challenge-ledger-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.challenge-assumption{border:1px solid var(--line);padding:14px;min-width:0;background:var(--paper)}
+.challenge-assumption h4{margin:0 0 8px;font-size:16px}.challenge-assumption .submitted{font-weight:800;font-size:16px;margin-bottom:12px;overflow-wrap:anywhere}
+.challenge-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.challenge-chip{font-size:10px;border:1px solid var(--line);padding:5px 7px;font-weight:800}
+.challenge-chip.priority{border-color:var(--risk);color:var(--risk)}.challenge-chip.missing{border-color:var(--warn);color:var(--warn)}
+.challenge-assumption small{display:block;font-size:10px;font-weight:800;text-transform:uppercase;color:var(--soft);margin-bottom:4px}
+.challenge-assumption p{margin:0 0 10px;line-height:1.45;overflow-wrap:anywhere}
+.challenge-note{font-size:12px;color:var(--soft);line-height:1.45}
+@media(max-width:760px){.challenge-ledger-cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -160,19 +170,57 @@ document.querySelectorAll('.gis-radius').forEach(function(btn){
  });
 });
 async function searchSite(){const q=str('siteAddress'),box=$('gisMatches');if(q.length<3){$('gisStatus').textContent='Enter at least 3 characters.';return}$('gisStatus').textContent='Searching locations...';box.style.display='none';$('gisResult').style.display='none';try{const r=await fetch('/api/site-intelligence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'search',query:q})});const a=await r.json();if(!r.ok)throw new Error(a.error||'Search unavailable');if(!a.results.length){$('gisStatus').textContent='No matching locations found. Add city/country and search again.';return}box.innerHTML=a.results.map((x,i)=>`<button type="button" class="gis-match" data-i="${i}"><b>${x.label.split(',')[0]}</b><span>${x.label}</span></button>`).join('');box.style.display='grid';$('gisStatus').textContent='Select the correct location.';[...box.querySelectorAll('.gis-match')].forEach(b=>b.onclick=()=>chooseSite(a.results[Number(b.dataset.i)]))}catch(e){$('gisStatus').textContent=e.message}}
-async function analyseSite(){const lat=num('siteLat'),lng=num('siteLng'),address=str('siteAddress'),status=$('gisStatus'),box=$('gisResult');if(!lat||!lng){status.textContent='Search and select a location first, or enter both coordinates under Advanced location details.';box.style.display='none';return}status.textContent='Analysing public GIS context…';box.style.display='none';try{const r=await fetch('/api/site-intelligence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat:lat||null,lng:lng||null,address,country:(()=>{const z=(leoxisSelectedSite?.label||address||'').toLowerCase(),fallback=(str('country')||'').toLowerCase();if(z.includes('malaysia')||fallback.includes('malaysia'))return'Malaysia';if(z.includes('philippines')||z.includes('pilipinas')||fallback.includes('philippines')||fallback.includes('pilipinas'))return'Philippines';return str('country')})()})});const a=await r.json();if(!r.ok)throw new Error(a.error||'Site intelligence unavailable');leoxisSiteIntelligence=a;$('siteLat').value=a.location.lat.toFixed(6);$('siteLng').value=a.location.lng.toFixed(6);$('gisMajorRetailers').textContent=a.context.retailerStatus==='complete'?a.context.majorRetailers5km.length:'—';$('gisMalls').textContent=a.context.osmStatus==='complete'?a.context.malls3000m:'—';$('gisMarkets').textContent=a.context.osmStatus==='complete'?a.context.marketplaces3000m:'—';$('gisTransit').textContent=a.context.osmStatus==='complete'?a.context.transitStations1000m:'—';$('gisInterpretation').textContent=a.interpretation;$('gisMallNames').textContent=a.context.mallClassifications?.length?a.context.mallClassifications.map(m=>m.name+' ['+m.category+']').join(' · '):(a.context.namedMalls.length?a.context.namedMalls.join(' · '):'No named malls returned in the mapped sample.');$('gisRetailerNames').textContent='Select 1 km, 2 km or 5 km to show nearby major retailers.';$('gisMarketNames').textContent=a.context.namedMarketplaces.length?a.context.namedMarketplaces.join(' · '):'No named marketplaces returned in the mapped sample.';$('gisDiagnostics').textContent='Provider status — Foursquare: '+a.context.retailerStatus+' ('+a.context.successfulRetailerQueries+'/'+a.context.retailerQueries+' searches successful)'+(a.context.retailerErrors?.length?' · '+a.context.retailerErrors.join(' | '):'')+' · OSM: '+a.context.osmStatus+(a.context.osmError?' · '+a.context.osmError:'');$('gisSource').textContent=a.attribution+' · Source date '+a.evidence.sourceDate+' · '+a.evidence.coverageNote;status.textContent=a.location.label;box.style.display='block';if($('vnextGIS'))$('vnextGIS').textContent=a.context.majorRetailers5km.length+' verified major-retailer outlets within 5 km'}catch(e){status.textContent=e.message;box.style.display='none'}}
-function renderChallengeEngine(i,a){
- const box=$('LEOXIS_STAGE3_CHALLENGE_ENGINE_V1');if(!box||!a)return;
- const tm=num('targetMargin'),tp=num('targetPayback'),rows=[],qs=[];
- const add=(assumption,value,evidence,impact,challenge)=>rows.push({assumption,value,evidence,impact,challenge});
- add('Projected sales',money(i.projectedMonthlySales,i.currency)+' / month',i.evidence.sales?'Supported':'Unverified','High',a.targets&&a.targets.requiredSales&&a.targets.requiredSales>i.projectedMonthlySales?'Below required sales for current parameters':'Test downside resilience');
- add('Gross margin',i.grossMarginPct.toFixed(1)+'%',i.evidence.margin?'Supported':'Unverified','High','Validate category mix and landed-cost basis');
- add('CAPEX',money(i.capex,i.currency),i.evidence.capex?'Supported':'Unverified','High','Confirm quotations, scope and contingency');
- add('Rent + service',money(i.monthlyRent+i.serviceCharge,i.currency)+' / month',i.evidence.rent?'Supported':'Unverified','Medium','Confirm full occupancy economics and lease terms');
- add('Ramp-up',i.rampUpMonths?i.rampUpMonths+' months':'Not entered',i.rampUpMonths?'Entered':'Missing','Medium','Validate maturation curve against comparable openings');
- $('challengeLedger').innerHTML='<table class="challenge-table"><thead><tr><th>Assumption</th><th>Submitted case</th><th>Evidence</th><th>Impact</th><th>Challenge</th></tr></thead><tbody>'+rows.map(r=>'<tr><td><b>'+r.assumption+'</b></td><td>'+r.value+'</td><td>'+r.evidence+'</td><td>'+r.impact+'</td><td>'+r.challenge+'</td></tr>').join('')+'</tbody></table>';
- if(!i.evidence.sales)qs.push(['Sales','Which comparable stores or catchment evidence support '+money(i.projectedMonthlySales,i.currency)+' monthly sales?']);
- if(a.targets&&a.targets.requiredSales&&a.targets.requiredSales>i.projectedMonthlySales)qs.push(['Economics','What evidence supports closing the '+((a.targets.requiredSales/i.projectedMonthlySales-1)*100).toFixed(1)+'% sales gap required to meet current parameters?']);
+async function analyseSite(){const lat=num('siteLat'),lng=num('siteLng'),address=str('siteAddress'),status=$('gisStatus'),box=$('gisResult');if(!lat||!lng){status.textContent='Search and select a location first, or enter both coordinates under Advanced location details.';box.style.display='none';return}status.textContent='Analysing public GIS context…';box.style.display='none';try{const r=await fetch('/api/site-intelligence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat:lat||null,lng:lng||null,address,country:(()=>{const z=(leoxisSelectedSite?.label||address||'').toLowerCase(),fallback=(str('country')||'').toLowerCase();if(z.includes('malaysia')||fallback.includes('malaysia'))return'Malaysia';if(z.includes('philippines')||z.includes('pilipinas')||fallback.includes('philippines')||fallback.includes('pilipinas'))return'Philippines';return str('country')})()})});const a=await r.json();if(!r.ok)throw new Error(a.error||'Site intelligence unavailable');leoxisSiteIntelligence=a;$('siteLat').value=a.location.lat.toFixed(6);$('siteLng').value=a.location.lng.toFixed(6);$('gisMajorRetailers').textContent=a.context.retailerStatus==='complete'?a.context.majorRetailers5km.length:'—';$('gisMalls').textContent=a.context.osmStatus==='complete'?a.context.malls3000m:'—';$('gisMarkets').textContent=a.context.osmStatus==='complete'?a.context.marketplaces3000m:'—';$('gisTransit').textContent=a.context.osmStatus==='complete'?a.context.transitStations1000m:'—';$('gisInterpretation').textContent=a.interpretation;$('gisMallNames').textContent=a.context.mallClassifications?.length?a.context.mallClassifications.map(m=>m.name+' ['+m.category+']').join(' · '):function renderChallengeEngine(i,a){
+ const box=$('LEOXIS_STAGE3_CHALLENGE_ENGINE_V1');if(!box||!a||!a.base)return;
+ const e=i.evidence||{},rows=[],tm=num('targetMargin'),tp=num('targetPayback');
+ // A checked box is a user declaration, not document verification.
+ // Strong is reserved for future document-level verification, not assigned in this pilot.
+ const add=(name,value,declared,impact,challenge,reason)=>{
+  const quality=declared?'Moderate — declared':'Missing';
+  const risk=impact==='High'&&!declared?'Priority':impact==='High'?'Review':!declared?'Review':'Monitor';
+  rows.push({name,value,quality,impact,risk,challenge,reason});
+ };
+ add('Projected sales',money(i.projectedMonthlySales,i.currency)+' / month',!!e.sales,'High',
+  a.targets&&a.targets.requiredSales>i.projectedMonthlySales?'Evidence must support '+money(a.targets.requiredSales,i.currency)+' monthly sales to meet working parameters.':'Validate sales against comparable stores and downside assumptions.',
+  'Comparable-store checkbox; source and recency not yet independently verified.');
+ add('Gross margin',i.grossMarginPct.toFixed(1)+'%',!!e.margin,'High','Validate category mix, pricing and landed costs.',
+  'Margin evidence checkbox; source and recency not yet independently verified.');
+ add('CAPEX',money(i.capex,i.currency),!!e.capex,'High','Confirm firm quotations, scope and contingency.',
+  'Quotation checkbox; quotation documents not yet independently verified.');
+ add('Rent + service',money(i.monthlyRent+i.serviceCharge,i.currency)+' / month',!!e.rent,'Medium','Confirm all occupancy charges and lease conditions.',
+  'Lease checkbox; lease documents not yet independently verified.');
+ rows.push({name:'Ramp-up',value:i.rampUpMonths?i.rampUpMonths+' months':'Not entered',
+  quality:i.rampUpMonths?'Weak — input only':'Missing',impact:'Medium',risk:i.rampUpMonths?'Review':'Review',
+  challenge:'Compare maturation assumptions against actual opening cohorts.',reason:'An entered duration is not evidence of a validated ramp-up curve.'});
+ const rank={Priority:0,Review:1,Monitor:2};rows.sort((x,y)=>rank[x.risk]-rank[y.risk]);
+ const ledger=$('challengeLedger');ledger.replaceChildren();
+ const note=document.createElement('p');note.className='challenge-note';note.textContent='Evidence quality is provisional: checked boxes indicate user declarations, not independently verified documents. Strong requires document-level verification, which is not available in this pilot.';ledger.appendChild(note);
+ const cards=document.createElement('div');cards.className='challenge-ledger-cards';ledger.appendChild(cards);
+ rows.forEach(r=>{
+  const card=document.createElement('article');card.className='challenge-assumption';
+  const h=document.createElement('h4');h.textContent=r.name;card.appendChild(h);
+  const val=document.createElement('div');val.className='submitted';val.textContent=r.value;card.appendChild(val);
+  const meta=document.createElement('div');meta.className='challenge-meta';card.appendChild(meta);
+  [[r.quality,r.quality==='Missing'?'missing':''],[r.impact+' impact',''],[r.risk+' investigation',r.risk==='Priority'?'priority':'']].forEach(([v,cl])=>{
+   const chip=document.createElement('span');chip.className='challenge-chip '+cl;chip.textContent=v;meta.appendChild(chip);
+  });
+  const label=document.createElement('small');label.textContent='Management challenge';card.appendChild(label);
+  const ch=document.createElement('p');ch.textContent=r.challenge;card.appendChild(ch);
+  const why=document.createElement('p');why.className='challenge-note';why.textContent=r.reason;card.appendChild(why);
+  cards.appendChild(card);
+ });
+ const qs=[];
+ rows.filter(r=>r.risk==='Priority').forEach(r=>qs.push([r.name,r.challenge]));
+ if(a.targets&&a.targets.requiredSales>i.projectedMonthlySales)qs.push(['Economics','What evidence supports closing the '+((a.targets.requiredSales/i.projectedMonthlySales-1)*100).toFixed(1)+'% sales gap required to meet working parameters?']);
+ if(a.base.payback==null||a.base.payback>tp)qs.push(['Payback','Which controllable term—sales, margin, rent or CAPEX—can credibly close the payback gap?']);
+ if(a.downsideRisk==='RED')qs.push(['Downside','Which operating or commercial action protects against EBITDA-negative downside?']);
+ if(!qs.length)qs.push(['Validation','Which declared assumption is least supported by independently verifiable evidence?']);
+ const qbox=$('challengeQuestions');qbox.replaceChildren();qs.slice(0,5).forEach((q,n)=>{
+  const el=document.createElement('div');el.className='challenge-q';const tag=document.createElement('span');tag.className='challenge-tag';tag.textContent='Q'+(n+1)+' · '+q[0];const body=document.createElement('b');body.textContent=q[1];el.append(tag,body);qbox.appendChild(el);
+ });
+ box.style.display='block';
+}
+(a.targets.requiredSales/i.projectedMonthlySales-1)*100).toFixed(1)+'% sales gap required to meet current parameters?']);
  if(!i.evidence.capex)qs.push(['CAPEX','Which elements of CAPEX remain estimates rather than firm quotations, and what contingency is included?']);
  if(!i.evidence.margin)qs.push(['Margin','What category mix, pricing and landed-cost evidence supports '+i.grossMarginPct.toFixed(1)+'% gross margin?']);
  if(a.base&&a.base.payback!=null&&a.base.payback>tp)qs.push(['Payback','Which controllable term—sales, margin, rent or CAPEX—can realistically close the payback gap?']);
