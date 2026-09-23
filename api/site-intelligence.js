@@ -21,6 +21,7 @@ async function reverse(lat,lng){const u=new URL('https://nominatim.openstreetmap
 /* LEOXIS_GIS_DIAGNOSTICS_V251 */
 /* LEOXIS_GIS_COUNTRY_FIX_V252 */
 /* LEOXIS_GIS_SELECTED_COUNTRY_API_V253 */
+/* LEOXIS_GIS_DEDUPE_V254 */
 async function fsqBrandSearch(brand,lat,lng){
  const key=process.env.FOURSQUARE_API_KEY;if(!key)throw new Error('Foursquare Places is not configured');
  const u=new URL('https://places-api.foursquare.com/places/search');
@@ -37,7 +38,13 @@ async function foursquareMajorRetailers(lat,lng,country){
  const errors=[...new Set(bad.map(x=>String(x.reason?.message||'Unknown Foursquare error')).slice(0,5))];
  if(!good.length)return{major:[],queries:MAJOR_RETAILERS_MY.retailers.length,successfulQueries:0,failedQueries:bad.length,status:'unavailable',errors};
  const all=good.flatMap(x=>x.value),seen=new Set(),major=[];
- for(const x of all.sort((a,b)=>a.distanceM-b.distanceM)){const id=x.fsqPlaceId||`${x.key}:${x.locationName}:${x.distanceM}`;if(!seen.has(id)){seen.add(id);major.push(x)}}
+ for(const x of all.sort((a,b)=>a.distanceM-b.distanceM)){
+   const addr=norm(x.address||''),loc=norm(x.locationName||'');
+   const geoBucket=Math.round(x.distanceM/75);
+   const id=x.fsqPlaceId||`${x.key}:${addr||loc}:${geoBucket}`;
+   const duplicate=major.some(y=>y.key===x.key&&Math.abs(y.distanceM-x.distanceM)<=75&&(addr&&norm(y.address||'')===addr||loc&&norm(y.locationName||'')===loc));
+   if(!seen.has(id)&&!duplicate){seen.add(id);major.push(x)}
+ }
  return{major,queries:MAJOR_RETAILERS_MY.retailers.length,successfulQueries:good.length,failedQueries:bad.length,status:bad.length?'partial':'complete',errors};
 }
 async function osmContext(lat,lng){
