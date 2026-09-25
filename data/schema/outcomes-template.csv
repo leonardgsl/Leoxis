@@ -1,0 +1,1 @@
+customer_id,outcome_id,case_id,store_id,period,observed_at,actual_monthly_sales,actual_gross_margin_pct,actual_occupancy_cost,actual_payroll,actual_capex,actual_ebitda,actual_ebitda_margin_pct,actual_payback_months,primary_variance_driver,learning_note
