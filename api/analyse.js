@@ -14,7 +14,16 @@ function evidence(i){const e=i.evidence||{},c=[e.sales,e.rent,e.capex,e.margin,e
 export default function handler(req,res){
  if(req.method!=='POST')return res.status(405).json({ok:false,error:'Method not allowed'});
  try{
-  const i=req.body?.input||{},tm=n(req.body?.targetMargin)||10,tp=n(req.body?.targetPayback)||24,base=calc(i);
+  /* LEOXIS_DECISION_INTEGRITY_SERVER_V1 */
+  const i=req.body?.input||{},tm0=Number(req.body?.targetMargin),tp0=Number(req.body?.targetPayback),tm=Number.isFinite(tm0)?tm0:10,tp=Number.isFinite(tp0)?tp0:24;
+  const nn=['sellingArea','capex','deposit','monthlyRent','serviceCharge','turnoverRentPct','projectedMonthlySales','payroll','utilities','maintenance','otherStoreOpex','totalMonthlyStoreOpex','leaseTermYears','rampUpMonths'],errors=[];
+  nn.forEach(k=>{if(n(i[k])<0)errors.push(k+' cannot be negative')});
+  if(n(i.grossMarginPct)<0||n(i.grossMarginPct)>100)errors.push('grossMarginPct must be between 0 and 100');
+  if(n(i.turnoverRentPct)<0||n(i.turnoverRentPct)>100)errors.push('turnoverRentPct must be between 0 and 100');
+  if(tm<0||tm>100)errors.push('targetMargin must be between 0 and 100');
+  if(tp<1||tp>240)errors.push('targetPayback must be between 1 and 240 months');
+  if(errors.length)return res.status(422).json({ok:false,error:'Invalid decision inputs',errors});
+  const base=calc(i);
   const downside=calc(i,{salesPct:-10,gmPoints:-n(i.grossMarginPct)*.10,opexPct:10}),upside=calc(i,{salesPct:10,gmPoints:n(i.grossMarginPct)*.05});
   const ev=evidence(i),ms=tMargin(base,tm),ps=tPay(base,tp),required=Math.max(ms||0,ps||0),gap=base.sales&&required?(required/base.sales-1)*100:null;
   const baseStatus=(base.ebitda<=0||base.payback===null)?'RED':(base.margin>=tm&&base.payback<=tp?'GREEN':'AMBER');
