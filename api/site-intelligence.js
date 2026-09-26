@@ -65,14 +65,20 @@ async function foursquareMajorRetailers(lat,lng,country){
  }
  return{major,queries:registry.retailers.length,successfulQueries:good.length,failedQueries:bad.length,status:bad.length?'partial':'complete',errors};
 }
+/* LEOXIS_GIS_LOCATION_INTEGRITY_V264 */
 async function osmContext(lat,lng){
  const q=`[out:json][timeout:12];(/* LEOXIS_GIS_OSM_CONTEXT_V252 */nwr(around:3000,${lat},${lng})["shop"="mall"];nwr(around:3000,${lat},${lng})["amenity"="marketplace"];nwr(around:1000,${lat},${lng})["public_transport"="station"];nwr(around:1000,${lat},${lng})["railway"="station"];);out center tags;`;
  const endpoints=['https://overpass.kumi.systems/api/interpreter','https://overpass-api.de/api/interpreter'];
  let r=null,lastStatus=null;
  for(const endpoint of endpoints){try{r=await fetch(endpoint,{method:'POST',headers:{'User-Agent':APP_UA,'Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(q)});lastStatus=r.status;if(r.ok)break}catch(e){lastStatus='network'}}
- if(!r||!r.ok)return{malls3000m:null,marketplaces3000m:null,transitStations1000m:null,namedMalls:[],namedMarketplaces:[],osmStatus:'unavailable',osmError:`OpenStreetMap context ${lastStatus}`};
- const j=await r.json(),all=j.elements||[],malls=all.filter(x=>x.tags?.shop==='mall'),markets=all.filter(x=>x.tags?.amenity==='marketplace'),transit=all.filter(x=>x.tags?.public_transport==='station'||x.tags?.railway==='station');
- return{malls3000m:malls.length,marketplaces3000m:markets.length,transitStations1000m:transit.length,namedMalls:uniqNames(malls,6),mallClassifications:uniqNames(malls,6).map(name=>({name,category:classifyPhMall(name)})),namedMarketplaces:uniqNames(markets,4),osmStatus:'complete',osmError:null};
+ if(!r||!r.ok)return{malls3000m:null,marketplaces3000m:null,transitStations1000m:null,namedMalls:[],mallClassifications:[],namedMarketplaces:[],osmStatus:'unavailable',osmError:`OpenStreetMap context ${lastStatus}`};
+ const j=await r.json(),all=j.elements||[];
+ const withDistance=x=>{const la=Number(x.lat??x.center?.lat),lo=Number(x.lon??x.center?.lon);return Number.isFinite(la)&&Number.isFinite(lo)?{...x,_distanceM:Math.round(rad(lat,lng,la,lo))}:null};
+ const verified=(pred,max)=>all.filter(pred).map(withDistance).filter(x=>x&&x._distanceM<=max);
+ const malls=verified(x=>x.tags?.shop==='mall',3000),markets=verified(x=>x.tags?.amenity==='marketplace',3000),transit=verified(x=>x.tags?.public_transport==='station'||x.tags?.railway==='station',1000);
+ const namedMalls=[...new Map(malls.filter(x=>x.tags?.name).sort((a,b)=>a._distanceM-b._distanceM).map(x=>[x.tags.name,x])).values()].slice(0,6);
+ const namedMarkets=[...new Map(markets.filter(x=>x.tags?.name).sort((a,b)=>a._distanceM-b._distanceM).map(x=>[x.tags.name,x])).values()].slice(0,4);
+ return{malls3000m:malls.length,marketplaces3000m:markets.length,transitStations1000m:transit.length,namedMalls:namedMalls.map(x=>x.tags.name),mallClassifications:namedMalls.map(x=>({name:x.tags.name,category:classifyPhMall(x.tags.name),distanceM:x._distanceM})),namedMarketplaces:namedMarkets.map(x=>x.tags.name),osmStatus:'complete',osmError:null};
 }
 async function siteContext(lat,lng,country){
  const [fsq,osm]=await Promise.all([foursquareMajorRetailers(lat,lng,country),osmContext(lat,lng)]),major=fsq.major;
