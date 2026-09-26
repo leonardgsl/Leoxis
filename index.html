@@ -179,12 +179,20 @@ function showHome(){closeMenu();document.getElementById('homeView').style.displa
 function openExpansion(){closeMenu();document.getElementById('homeView').style.display='none';document.getElementById('toolView').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
 const $=id=>document.getElementById(id);let current=null;
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-function showTab(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));let pb=$('progressBar');if(pb)pb.style.width=id==='input'?'33%':id==='review'?'66%':'100%';scrollTo({top:0,behavior:'smooth'})}
+/* LEOXIS_NAVIGATION_DETERMINISM_V2 */
+function showTab(id){
+ const target=$(id);
+ if(!target||!target.classList.contains('panel'))return false;
+ document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x===target));
+ document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
+ const pb=$('progressBar');if(pb)pb.style.width=id==='input'?'33%':id==='review'?'66%':'100%';
+ window.scrollTo(0,0);
+ return target.classList.contains('active');
+}
 /* LEOXIS_EDIT_ASSUMPTIONS_ONECLICK_V1 */
-function editAssumptions(){
- showTab('input');
- const panel=$('input');
- if(panel&&!panel.classList.contains('active'))document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x===panel));
+function editAssumptions(e){
+ if(e){e.preventDefault();e.stopPropagation()}
+ return showTab('input');
 }
 document.addEventListener('DOMContentLoaded',()=>{const btn=$('editAssumptionsBtn');if(btn)btn.addEventListener('click',editAssumptions,{passive:true})});
 function num(id){let v=parseFloat($(id).value);return Number.isFinite(v)?v:0}function str(id){return $(id).value.trim()}function chk(id){return $(id).checked}
