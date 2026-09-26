@@ -39,11 +39,22 @@ async function reverse(lat,lng){const u=new URL('https://nominatim.openstreetmap
 async function fsqBrandSearch(brand,lat,lng){
  const key=process.env.FOURSQUARE_API_KEY;if(!key)throw new Error('Foursquare Places is not configured');
  const u=new URL('https://places-api.foursquare.com/places/search');
- u.searchParams.set('query',brand.name);u.searchParams.set('ll',`${lat},${lng}`);u.searchParams.set('radius','5000');u.searchParams.set('limit','50');u.searchParams.set('sort','DISTANCE');u.searchParams.set('fields','fsq_place_id,name,latitude,longitude,location');
+ u.searchParams.set('query',brand.name);u.searchParams.set('ll',`${lat},${lng}`);u.searchParams.set('radius','5000');u.searchParams.set('limit','50');u.searchParams.set('sort','DISTANCE');u.searchParams.set('fields','fsq_place_id,name,latitude,longitude,location,categories,chains');
  const r=await fetch(u,{headers:{Authorization:`Bearer ${key}`,'X-Places-Api-Version':'2025-06-17',Accept:'application/json'},signal:AbortSignal.timeout(4500)});
  if(!r.ok){let detail='';try{const t=await r.text();detail=t.slice(0,180)}catch{};const e=new Error(`Foursquare Places ${r.status}${detail?': '+detail:''}`);e.provider='foursquare';e.status=r.status;throw e;}
  const j=await r.json();
- return (j.results||[]).map(x=>{const n=norm(x.name),ok=brand.aliases.some(a=>n.includes(norm(a))||norm(a).includes(n)),la=Number(x.latitude),lo=Number(x.longitude);if(!ok||!Number.isFinite(la)||!Number.isFinite(lo))return null;const distanceM=Math.round(rad(lat,lng,la,lo));if(distanceM>5000)return null;return{fsqPlaceId:x.fsq_place_id,key:brand.key,name:brand.name,locationName:x.name,verifiedStores:brand.store_count,countBasis:brand.count_basis,category:brand.category,sourceTier:brand.source_tier,distanceM,address:x.location?.formatted_address||x.location?.address||''}}).filter(Boolean);
+ /* LEOXIS_GIS_ENTITY_INTEGRITY_V267 */
+ const badCategory=/restaurant|food|dining|library|education|school|office|atm|financial|service|warehouse|distribution/i;
+ return (j.results||[]).map(x=>{
+  const n=norm(x.name),exact=brand.aliases.some(a=>n===norm(a)||n.startsWith(norm(a)+' ')||n.startsWith(norm(a)+' -')||n.startsWith(norm(a)+' @'));
+  const chain=(x.chains||[]).some(c=>brand.aliases.some(a=>norm(c.name)===norm(a)||norm(c.name).includes(norm(a))));
+  const cats=(x.categories||[]).map(c=>c.name||c.short_name||'').join(' ');
+  const semanticOk=!badCategory.test(cats);
+  const la=Number(x.latitude),lo=Number(x.longitude);
+  if((!exact&&!chain)||!semanticOk||!Number.isFinite(la)||!Number.isFinite(lo))return null;
+  const distanceM=Math.round(rad(lat,lng,la,lo));if(distanceM>5000)return null;
+  return{fsqPlaceId:x.fsq_place_id,key:brand.key,name:brand.name,locationName:x.name,verifiedStores:brand.store_count,countBasis:brand.count_basis,category:brand.category,sourceTier:brand.source_tier,distanceM,address:x.location?.formatted_address||x.location?.address||'',providerCategories:cats};
+ }).filter(Boolean);
 }
 async function foursquareMajorRetailers(lat,lng,country){
  const c=norm(country),isMalaysia=c==='malaysia'||c==='my'||c.includes('malaysia'),isPhilippines=c==='philippines'||c==='philippine'||c==='ph'||c.includes('philippines')||c.includes('pilipinas');
@@ -96,15 +107,18 @@ if(req.body?.action==='search'){/* LEOXIS_GIS_SEARCH_FALLBACK_V266 */
  const words=q.split(/\s+/),geo=new Set([norm(city),norm(country),'malaysia','kelantan','kota','bharu','bahru'].filter(Boolean));
  const core=words.filter(w=>!geo.has(norm(w))).join(' ');
  if(core&&core!==q){add([core,city,country].filter(Boolean).join(', '));add(core)}
- const fetchVariant=async term=>{const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',term);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','8');u.searchParams.set('addressdetails','1');const r=await fetch(u,{headers:{'User-Agent':APP_UA,'Accept-Language':'en'},signal:AbortSignal.timeout(5000)});if(!r.ok)return[];return await r.json()};
+ const inferredCountry=norm(country||q).includes('malaysia')?'my':norm(country||q).includes('philippines')?'ph':'';
+ const fetchVariant=async term=>{const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',term);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','8');u.searchParams.set('addressdetails','1');if(inferredCountry)u.searchParams.set('countrycodes',inferredCountry);const r=await fetch(u,{headers:{'User-Agent':APP_UA,'Accept-Language':'en'},signal:AbortSignal.timeout(5000)});if(!r.ok)return[];return await r.json()};
  let all=[];
  for(const v of variants){const j=await fetchVariant(v);all.push(...j);if(all.length>=8)break}
  const uniq=new Map();for(const x of all){const k=x.place_id||`${x.lat},${x.lon}`;if(!uniq.has(k))uniq.set(k,x)}
  let j=[...uniq.values()],tokens=norm(q).split(/\s+/).filter(x=>x.length>1),ct=norm(city),co=norm(country);
  const aliases=t=>t==='bahru'?['bahru','bharu']:t==='bharu'?['bharu','bahru']:[t];
- const score=x=>{const z=norm(x.display_name||'');let v=tokens.reduce((n,t)=>n+(aliases(t).some(a=>z.includes(a))?3:0),0);if(ct&&z.includes(ct))v+=5;if(co&&z.includes(co))v+=5;const first=norm((x.display_name||'').split(',')[0]);if(tokens.length&&tokens.every(t=>aliases(t).some(a=>first.includes(a))))v+=12;return v};
+ /* LEOXIS_GIS_GEO_RANKING_V267 */
+ const requestedMalaysia=norm(q+' '+country).includes('malaysia'),requestedKelantan=norm(q).includes('kelantan'),requestedKB=norm(q).includes('kota bharu')||norm(q).includes('kota bahru');
+ const score=x=>{const z=norm(x.display_name||''),a=x.address||{};let v=tokens.reduce((n,t)=>n+(aliases(t).some(k=>z.includes(k))?3:0),0);const cc=norm(a.country_code||'');if(requestedMalaysia)v+=cc==='my'?100:-100;if(requestedKelantan)v+=norm(a.state||'').includes('kelantan')?40:-20;if(requestedKB){const locality=norm([a.city,a.town,a.municipality,a.county,a.state_district].filter(Boolean).join(' '));v+=(locality.includes('kota bharu')||locality.includes('kota bahru'))?60:-20}if(ct&&z.includes(ct))v+=15;if(co&&z.includes(co))v+=20;const first=norm((x.display_name||'').split(',')[0]);if(tokens.length&&tokens.every(t=>aliases(t).some(k=>first.includes(k))))v+=12;return v};
  j=j.sort((a,b)=>score(b)-score(a));
- return res.status(200).json({ok:true,engine:'LEOXIS_GIS_SEARCH_FALLBACK_V266',queriesTried:variants.length,results:j.slice(0,5).map(x=>({label:x.display_name,lat:Number(x.lat),lng:Number(x.lon),type:x.type||x.category||'place'}))})
+ return res.status(200).json({ok:true,engine:'LEOXIS_GIS_INTEGRITY_V267',queriesTried:variants.length,results:j.slice(0,5).map(x=>({label:x.display_name,lat:Number(x.lat),lng:Number(x.lon),type:x.type||x.category||'place'}))})
 }
 
 let lat=finite(req.body?.lat),lng=finite(req.body?.lng),label=null;const address=String(req.body?.address||'').trim();if(lat===null||lng===null){if(!address)return res.status(400).json({ok:false,error:'Enter coordinates or an address.'});const g=await geocode(address);lat=g.lat;lng=g.lng;label=g.label}else label=await reverse(lat,lng);if(lat < -90||lat > 90||lng < -180||lng > 180)return res.status(400).json({ok:false,error:'Invalid coordinates.'});let country=String(req.body?.country||'').trim();if(norm(address).includes('malaysia')||norm(label).includes('malaysia'))country='Malaysia';const context=await siteContext(lat,lng,country);return res.status(200).json({ok:true,engine:'LEOXIS_GIS_FOURSQUARE_V25',location:{lat,lng,label:label||address||`${lat}, ${lng}`},context,evidence:{source:'Foursquare Places + OpenStreetMap',sourceDate:new Date().toISOString().slice(0,10),confidence:'Contextual',coverageNote:context.retailerStatus==='complete'?'Major-retailer outlet presence from Foursquare Places; map/context from OpenStreetMap.':context.retailerStatus==='partial'?'Retailer result incomplete: some Foursquare searches failed.':'Retailer data unavailable: Foursquare searches failed.'},interpretation:context.retailerStatus==='complete'?`${context.majorRetailers5km.length} verified major-retailer outlets found within 5 km. Location context supports due diligence but does not validate the submitted sales forecast.`:context.retailerStatus==='partial'?`Partial retailer result: ${context.majorRetailers5km.length} outlets returned, but ${context.failedRetailerQueries} of ${context.retailerQueries} retailer searches failed. Do not treat this as complete coverage.`:`Major-retailer data unavailable. ${context.failedRetailerQueries} of ${context.retailerQueries} Foursquare searches failed; zero must not be interpreted as no nearby retailers.`,attribution:'Retailer POIs: Foursquare Places · Map/context: © OpenStreetMap contributors · ODbL',disclaimer:'Public GIS context is not a demand forecast, footfall estimate or universal industry benchmark.'})}catch(e){return res.status(503).json({ok:false,error:e.message||'Site intelligence unavailable'})}}
