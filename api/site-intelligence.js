@@ -113,12 +113,15 @@ if(req.body?.action==='search'){/* LEOXIS_GIS_CANDIDATE_GENERATION_V269 */
  const words=q.split(/\s+/),geo=new Set([norm(city),norm(country),'malaysia','kelantan','kota','bharu','bahru'].filter(Boolean));
  const core=words.filter(w=>!geo.has(norm(w))).join(' ');
  if(core&&core!==q){add([core,city,country].filter(Boolean).join(', '));add(core)}
+ /* LEOXIS_GIS_SUPPORTED_COUNTRY_SEARCH_V271 */
+ const SEARCH_COUNTRY_CODES=['my','ph'];
  const inferredCountry=norm(country||q).includes('malaysia')?'my':norm(country||q).includes('philippines')?'ph':'';
- const fetchVariant=async term=>{const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',term);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','12');u.searchParams.set('addressdetails','1');u.searchParams.set('namedetails','1');if(inferredCountry)u.searchParams.set('countrycodes',inferredCountry);const r=await fetch(u,{headers:{'User-Agent':APP_UA,'Accept-Language':'en'},signal:AbortSignal.timeout(5000)});if(!r.ok)return[];return await r.json()};
+ const allowedCountryCodes=inferredCountry?[inferredCountry]:SEARCH_COUNTRY_CODES;
+ const fetchVariant=async term=>{const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',term);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','12');u.searchParams.set('addressdetails','1');u.searchParams.set('namedetails','1');u.searchParams.set('countrycodes',allowedCountryCodes.join(','));const r=await fetch(u,{headers:{'User-Agent':APP_UA,'Accept-Language':'en'},signal:AbortSignal.timeout(5000)});if(!r.ok)return[];return await r.json()};
  let all=[];
  for(const v of variants){const j=await fetchVariant(v);all.push(...j)}
  const uniq=new Map();for(const x of all){const k=x.place_id||`${x.lat},${x.lon}`;if(!uniq.has(k))uniq.set(k,x)}
- let j=[...uniq.values()],tokens=norm(q).split(/\s+/).filter(x=>x.length>1),ct=norm(city),co=norm(country);
+ let j=[...uniq.values()].filter(x=>allowedCountryCodes.includes(norm(x.address?.country_code||''))),tokens=norm(q).split(/\s+/).filter(x=>x.length>1),ct=norm(city),co=norm(country);
  const aliases=t=>t==='bahru'?['bahru','bharu']:t==='bharu'?['bharu','bahru']:[t];
  /* LEOXIS_GIS_VENUE_INTENT_V268 */
  const stop=new Set(['mall','shopping','centre','center','city','jalan','road','street','the','at','@','malaysia','kelantan','johor','bahru','bharu']);
@@ -130,7 +133,7 @@ if(req.body?.action==='search'){/* LEOXIS_GIS_CANDIDATE_GENERATION_V269 */
   v+=tokens.reduce((n,t)=>n+(aliases(t).some(k=>z.includes(k))?2:0),0);
   if(ct&&z.includes(ct))v+=15;if(co&&z.includes(co))v+=20;return v};
  j=j.sort((a,b)=>score(b)-score(a));
- return res.status(200).json({ok:true,engine:'LEOXIS_GIS_CANDIDATE_GENERATION_V269',queriesTried:variants.length,candidateCount:j.length,results:j.slice(0,5).map(x=>({label:x.display_name,lat:Number(x.lat),lng:Number(x.lon),type:x.type||x.category||'place'}))})
+ return res.status(200).json({ok:true,engine:'LEOXIS_GIS_SUPPORTED_COUNTRY_SEARCH_V271',supportedCountries:['Malaysia','Philippines'],queriesTried:variants.length,candidateCount:j.length,results:j.slice(0,5).map(x=>({label:x.display_name,lat:Number(x.lat),lng:Number(x.lon),type:x.type||x.category||'place'}))})
 }
 
 /* LEOXIS_GIS_COVERAGE_V270 */
